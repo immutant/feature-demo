@@ -1,10 +1,4 @@
 
-* Videos
-  - [[http://www.infoq.com/presentations/Introducing-Immutant][Clojure/West 2012]] -- a dated overview of 5/6 of the api's
-  - [[http://www.youtube.com/watch?v%3DP9tfxdcpkCc][Clojure/Conj 2012]] -- building a non-trivial app with an Immutant REPL
-  - [[http://www.youtube.com/watch?v%3DKqdY0wz_Rb0][Overlay Screencast]] -- overlay TorqueBox to share messaging/caching 
-
-
 * Immutant is an Application Server
 
 ** An integrated stack
@@ -39,6 +33,7 @@
 ** Tasks
 
    lein immutant install
+
    lein immutant overlay
 
    lein immutant run
@@ -46,9 +41,11 @@
    lein new immutant foo
 
    lein immutant deploy
+
    lein immutant undeploy
 
    lein immutant version
+
    lein immutant env
 
    lein immutant test
@@ -57,8 +54,6 @@
 * Immutant libraries
   
   Functions whose side effects invoke JBoss services
-
-  Examples: https://github.com/jcrossley3/random-apps-of-kindness/tree/master/demo
 
 ** Basic initialization
 
@@ -206,3 +201,11 @@
      $ lein immutant test
 
 ** Web sockets COMING SOON (eventually... we hope)
+
+
+* Videos
+  - [[http://www.infoq.com/presentations/Introducing-Immutant][Clojure/West 2012]] -- a dated overview of 5/6 of the api's
+  - [[http://www.youtube.com/watch?v%3DP9tfxdcpkCc][Clojure/Conj 2012]] -- building a non-trivial app with an Immutant REPL
+  - [[http://www.youtube.com/watch?v%3DKqdY0wz_Rb0][Overlay Screencast]] -- overlay TorqueBox to share messaging/caching 
+
+
