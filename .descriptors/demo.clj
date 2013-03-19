@@ -1,0 +1,1 @@
+{:root "/Users/jim/src/apps/demo", :context-path "demo-d916d907-02de-4d95-9cf6-db375de900c8", :lein-profiles [:dev :test], :swank-port nil, :nrepl-port 7899}
