@@ -1,13 +1,5 @@
-# demo
+# Immutant feature demo
 
-A Clojure library designed to ... well, that part is up to you.
+An app showing trivial examples of all the Immutant namespaces.
 
-## Usage
-
-FIXME
-
-## License
-
-Copyright © 2013 FIXME
-
-Distributed under the Eclipse Public License, the same as Clojure.
+See the [overview](https://github.com/immutant/feature-demo/blob/master/doc/overview.org)
