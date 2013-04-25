@@ -6,4 +6,4 @@
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [ring/ring-core "1.2.0-beta1"]
                  [com.h2database/h2 "1.3.160"]]
-  :immutant {:init immutant.init/load-all})
+  :profiles {:openshift {:immutant {:init immutant.init/load-all}}})
