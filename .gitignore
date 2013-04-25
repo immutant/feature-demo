@@ -2,6 +2,7 @@
 /lib
 /classes
 /checkouts
+/.descriptors
 pom.xml
 pom.xml.asc
 *.jar
