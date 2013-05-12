@@ -39,7 +39,7 @@
 
    - lein immutant run
 
-   - lein new immutant foo
+   - lein immutant new foo
    - lein immutant init
 
    - lein immutant deploy
