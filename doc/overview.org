@@ -1,3 +1,4 @@
+[[file:images/immutant_logo.jpg]]
 
 * Immutant is an Application Server
 
@@ -219,4 +220,4 @@
 
 ** Web sockets 
    
-   With Undertow, the new JBoss non-blocking web server in AS8
+   With Undertow, the new JBoss non-blocking web server coming in AS8
