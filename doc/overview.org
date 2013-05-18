@@ -2,12 +2,12 @@
 * Immutant is an Application Server
 
 ** An integrated stack
-   
+
    The [[file:images/immutant-runtime.png][Immutant runtime]] compared to [[file:images/tomcat-runtime.png][Jetty or Tomcat]]
 
 *** simpler to manage
 *** all provided services scaled same way
-    add a node to the cluster
+    by adding nodes to the cluster
 
 ** Analogous to an operating system
 
@@ -16,7 +16,7 @@
 
 ** Better resource utilization
 *** RAM
-    - 1 Immutant with 3 apps > 3 Jetty instances
+    - 1 Immutant with 3 apps < 3 Jetty instances
     - 1 Immutant with 3 *web* apps = 1 Jetty with 3 apps
 *** Disk
     Dependent libs in ~/.m2/repository
@@ -31,20 +31,21 @@
 
 
 * The [[https://github.com/immutant/lein-immutant][lein-immutant]] plugin
-  
+
 ** Tasks
 
-   - lein immutant install
-   - lein immutant overlay
+   - lein immutant install [--full]
+   - lein immutant overlay [torquebox]
 
-   - lein immutant run
+   - lein immutant run [--clustered]
 
    - lein immutant new foo
    - lein immutant init
 
-   - lein immutant deploy
+   - lein immutant deploy [--archive --context-path --virtual-host]
    - lein immutant undeploy
 
+   - lein immutant list
    - lein immutant version
    - lein immutant env
 
@@ -52,7 +53,7 @@
 
 
 * Immutant libraries
-  
+
   Functions whose side effects invoke JBoss services
 
 ** Basic initialization
@@ -64,7 +65,7 @@
      * (require immutant.init)
      * (get-in project [:ring :handler])
 
-** immutant.web 
+** immutant.web
 
    - app segmentation via virtual host and/or context path
    - automatic session replication in a cluster
@@ -74,17 +75,17 @@
      stacktraces?, :auto-reload?, :reload-paths
    - handy reflection functions in immutant.util
 
-   examples: [[file:~/src/apps/demo/src/demo/web.clj::(ns%20demo.web][demo/web.clj]]
+   examples: [[file:~/src/feature-demo/src/demo/web.clj::(ns%20demo.web][demo/web.clj]]
 
 ** immutant.messaging
-   
+
    - two destination abstractions: topics and queues
    - consumers automatically load-balanced across a cluster
    - message content can be just about anything
    - arbitrarily nested collections of standard data types can be
      transparently exchanged with any :edn or :json peers.
    - messages can be prioritized, filtered, and automatically expired
-   - all messaging operations are transactional 
+   - all messaging operations are transactional
    - durable topic subscribers are supported
    - destinations may be remote
 
@@ -92,7 +93,7 @@
      * (start)
      * (stop)
 
-   - produce 
+   - produce
      * (publish)
      * (request)
    - consume
@@ -101,7 +102,7 @@
      * (listen)
      * (respond)
 
-   Examples: [[file:~/src/apps/demo/src/demo/messaging.clj::(ns%20demo.messaging][demo/messaging.clj]]
+   Examples: [[file:~/src/feature-demo/src/demo/messaging.clj::(ns%20demo.messaging][demo/messaging.clj]]
 
 *** immutant.pipeline
 
@@ -112,7 +113,7 @@
 
     Alpha
 
-** immutant.jobs 
+** immutant.jobs
 
    - scheduled jobs share the lifecycle of your app
    - singleton by default (only one node in cluster)
@@ -137,10 +138,10 @@
     | :repeat | # of repeats after initial firing; requires :every; illegal with a spec; |
     | :until  | java.util.Date or ms since epoch; illegal with a spec                    |
 
-    Examples: [[file:../src/demo/jobs.clj::(ns%20demo.jobs][demo/jobs.clj]]
+    Examples: [[file:~/src/feature-demo/src/demo/jobs.clj::(ns%20demo.jobs][demo/jobs.clj]]
 
 ** immutant.cache
-   
+
    - infinispan HA transactional data grid, key/value store
    - flexible clustering: :replicated, :invalidated, :distributed
    - eviction, expiration, persistence, conditional writes
@@ -149,10 +150,10 @@
    - can be shared with ruby apps in overlaid-torquebox
    - mutable operations in [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.cache.html#var-Mutable][immutant.cache/Mutable]] protocol
 
-   Examples: [[file:../src/demo/cache.clj::(ns%20demo.cache][demo/cache.clj]]
+   Examples: [[file:~/src/feature-demo/src/demo/cache.clj::(ns%20demo.cache][demo/cache.clj]]
 
 ** immutant.daemons
-   
+
    - pretty darn [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.daemons.html#var-Daemon][simple]]
    - most interesting as HA singleton in cluster
 
@@ -165,45 +166,57 @@
    - use immutant.xa/datasource to create transactional resources
    - macros instead of scope annotations, e.g. required, requires-new, not-supported
 
-   Examples: [[file:../src/demo/xa.clj::(ns%20demo.xa][demo/xa.clj]]
+   Examples: [[file:~/src/feature-demo/src/demo/xa.clj::(ns%20demo.xa][demo/xa.clj]]
 
 
 * Other stuff
 ** Videos
    - [[http://www.infoq.com/presentations/Introducing-Immutant][Clojure/West 2012]] -- a dated overview of 5/6 of the api's
    - [[http://www.youtube.com/watch?v%3DP9tfxdcpkCc][Clojure/Conj 2012]] -- building a non-trivial app with an Immutant REPL
-   - [[http://www.youtube.com/watch?v%3DKqdY0wz_Rb0][Overlay Screencast]] -- overlay TorqueBox to share messaging/caching 
+   - [[http://www.youtube.com/watch?v%3DKqdY0wz_Rb0][Overlay Screencast]] -- overlay TorqueBox to share messaging/caching
 ** Overlay
+   
+   In theory, a means to add Immutant, TorqueBox, Escalante, AS.JS modules onto
+   any JBoss installation. 
 
-   checkout the [[http://immutant.org/news/2013/03/07/overlay-screencast/][screencast]] 
+   TorqueBox and Immutant applications can exchange messages and share
+   cached data encoded with either EDN or JSON. See the [[http://immutant.org/news/2013/03/07/overlay-screencast/][screencast]] for
+   examples.
 
 ** Clustering
 
-   # If multicast is enabled
-   $ lein immutant run --clustered
+*** If multicast is enabled, it's easy
+    
+    $ lein immutant run --clustered
 
-   # If multicast is disabled, there will be XML dragons to tame
+*** If multicast is disabled, there will be XML dragons.
+    On Amazon, S3_PING can provide dynamic peer discovery
 
-   # Simulate locally with port offset
-   $ lein immutant run --clustered -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
-   $ lein immutant run --clustered -Djboss.node.name=two -Djboss.server.data.dir=/tmp/two -Djboss.socket.binding.port-offset=100
+*** Simulate on your laptop
 
-   # ...or IP aliases
-   $ sudo ifconfig en1 inet 192.168.6.201/32 alias
-   $ lein immutant run --clustered -b 192.168.6.201 -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
+**** with port offset
+
+     $ lein immutant run --clustered -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
+     $ lein immutant run --clustered -Djboss.node.name=two -Djboss.server.data.dir=/tmp/two -Djboss.socket.binding.port-offset=100
+
+**** or IP aliases
+
+     $ sudo ifconfig en1 inet 192.168.6.201/32 alias
+     $ lein immutant run --clustered -b 192.168.6.201 -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
+
 
 ** OpenShift
 
    checkout the [[https://github.com/openshift-quickstart/immutant-quickstart][quickstart]]
 
-   should be a good example of working ec2 multicast-less clustering
+   should be a good example of working ec2 clustering config (TCPPING)
 
 ** In-container testing
 
    Provided by the [[https://github.com/immutant/fntest][fntest]] library
 
-     $ lein immutant test
+   $ lein immutant test
 
-** Web sockets COMING SOON (eventually... we hope)
-
-
+** Web sockets 
+   
+   With Undertow, the new JBoss non-blocking web server in AS8

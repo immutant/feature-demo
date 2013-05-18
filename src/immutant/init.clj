@@ -1,9 +1,10 @@
-(ns immutant.init
-  (:require demo.web))
+(ns immutant.init)
 
 (defn load-all []
-  (require 'demo.cache
+  (require 'demo.web
+           'demo.cache
            'demo.daemons
            'demo.jobs
            'demo.messaging
            'demo.xa))
+

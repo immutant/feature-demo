@@ -4,7 +4,7 @@
 
 ;;; Writing
 
-(def foo (cache/cache "foo", :ttl 5, :idle 1, :units :minutes))
+(def foo (cache/create "foo", :ttl 5, :idle 1, :units :minutes))
 
 ;;; Put an entry in the cache
 (cache/put foo :a 1)
@@ -31,7 +31,7 @@
 
 ;;; Reading
 
-(def bar (cache/cache "bar" :seed {:a 1, :b {:c 3, :d 4}}))
+(def bar (cache/create "bar" :seed {:a 1, :b {:c 3, :d 4}}))
 
 ;;; Use get to obtain associated values
 (get bar :a)                              ;=> 1
@@ -55,7 +55,7 @@
 
 ;;; Deleting
 
-(def baz (cache/cache "baz" :seed {:a 1 :b 2}))
+(def baz (cache/create "baz" :seed {:a 1 :b 2}))
 
 ;;; Deleting a missing key is harmless
 (cache/delete baz :missing)                     ;=> nil
@@ -91,7 +91,7 @@
 
 ;;; It's possible to manipulate the cache backing the memoized
 ;;; function by referring to its name
-(def c (cache/cache "memo"))
+(def c (cache/lookup "memo"))
 (get c [1 2 3])                         ;=> 42
 
 

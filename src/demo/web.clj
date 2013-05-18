@@ -14,8 +14,7 @@
    :headers {"Content-Type" "text/plain"}
    :body (with-out-str (pprint request))})
 ;;; Mount the handler relative to the app's context path [/demo]
-(web/start #'request-dumper)
-
+(web/start request-dumper)
 
 
 (defn world-greeter
@@ -25,8 +24,7 @@
    :headers {"Content-Type" "text/html"}
    :body "<h1>Hello World</h1>"})
 ;;; Mount it at a "sub context path" [/demo/hello]
-(web/start "/hello" #'world-greeter)
-
+(web/start "/hello" world-greeter)
 
 
 (defn counter [{session :session}]
@@ -41,11 +39,9 @@
   {:store (immutant-session/servlet-store)}))
 
 
-
 ;;; Static resource middleware
 ;;; Use immutant.web/wrap-resource unless >=1.2 ring
 (web/start (ring-resource/wrap-resource #'request-dumper "public"))
-
 
 
 ;;; Handy utilities
