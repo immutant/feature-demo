@@ -90,7 +90,7 @@
    - message content can be just about anything
    - arbitrarily nested collections of standard data types can be
      transparently exchanged with any :edn or :json peers.
-   - messages can be prioritized, filtered, and automatically expired
+   - messages can be prioritized, filtered, expired, and evicted
    - all messaging operations are transactional
    - durable topic subscribers are supported
    - destinations may be remote
@@ -102,6 +102,7 @@
    - produce
      * (publish)
      * (request)
+
    - consume
      * (receive)
      * (message-seq)
@@ -125,7 +126,7 @@
    - singleton by default (only one node in cluster)
    - not durable
 
-*** cron syntax
+*** "cron" syntax
 
     dash for spans, comma for multiples, division for rates
 
@@ -137,13 +138,13 @@
     | dow     |  1-7 or SUN-SAT | ?        |
     | year    |       1970-2099 | optional |
 
-*** at options
+*** "at" options
 
-    | :at     | java.util.Date, millis since epoch, or "HHmm"         |
-    | :in     | start in millis from now, period alias or period spec |
-    | :every  | delay interval in millis, period alias or period spec |
-    | :repeat | # of repeats after initial firing; requires :every    |
-    | :until  | java.util.Date, millis since epoch, or "HHmm"         |
+    | :at     | java.util.Date, millis since epoch, or a military time string "HHmm" |
+    | :in     | start in millis from now, period alias or period spec                |
+    | :every  | delay interval in millis, period alias or period spec                |
+    | :repeat | # of repeats after initial firing; requires :every                   |
+    | :until  | java.util.Date, millis since epoch, or "HHmm"                        |
 
     Examples: [[file:~/src/feature-demo/src/demo/jobs.clj::(ns%20demo.jobs][demo/jobs.clj]]
 
@@ -178,14 +179,18 @@
 
 
 * Other stuff
+
 ** Videos
+
    - [[http://www.infoq.com/presentations/Introducing-Immutant][Clojure/West 2012]] -- a dated overview of 5/6 of the api's
    - [[http://www.youtube.com/watch?v%3DP9tfxdcpkCc][Clojure/Conj 2012]] -- building a non-trivial app with an Immutant REPL
    - [[http://www.youtube.com/watch?v%3DKqdY0wz_Rb0][Overlay Screencast]] -- overlay TorqueBox to share messaging/caching
+
 ** Overlay
    
-   In theory, a means to add Immutant, TorqueBox, Escalante, AS.JS modules onto
-   any JBoss installation. 
+   In theory, a means to overlay the modules and config of any
+   JBoss-derived distribution, e.g. Immutant, TorqueBox, Escalante, or
+   as.js, onto any JBoss installation.
 
    TorqueBox and Immutant applications can exchange messages and share
    cached data encoded with either EDN or JSON. See the [[http://immutant.org/news/2013/03/07/overlay-screencast/][screencast]] for
@@ -212,12 +217,11 @@
      $ sudo ifconfig en1 inet 192.168.6.201/32 alias
      $ lein immutant run --clustered -b 192.168.6.201 -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
 
-
 ** OpenShift
 
-   checkout the [[https://github.com/openshift-quickstart/immutant-quickstart][quickstart]]
+   Checkout the [[https://github.com/openshift-quickstart/immutant-quickstart][quickstart]]
 
-   should be a good example of working ec2 clustering config (TCPPING)
+   Should be a good example of working ec2 clustering config (TCPPING)
 
 ** In-container testing
 
