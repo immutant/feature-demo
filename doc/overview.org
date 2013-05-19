@@ -10,10 +10,12 @@
 *** all provided services scaled same way
     by adding nodes to the cluster
 
+
 ** Analogous to an operating system
 
 *** OS provides sockets, file systems, init.d, etc
 *** AS provides clustering, messaging, scheduling, etc
+
 
 ** Better resource utilization
 *** RAM
@@ -21,6 +23,7 @@
     - 1 Immutant with 3 *web* apps = 1 Jetty with 3 apps
 *** Disk
     Dependent libs in ~/.m2/repository
+
 
 ** Risks
 
@@ -118,6 +121,7 @@
 
    - scheduled jobs share the lifecycle of your app
    - singleton by default (only one node in cluster)
+   - not durable
 
 *** cron syntax
 
@@ -133,11 +137,11 @@
 
 *** at options
 
-    | :at     | java.util.Date or ms since epoch; illegal with a spec or :in             |
-    | :in     | start in ms from now; illegal with a spec or :at                         |
-    | :every  | delay interval in ms; illegal with a spec                                |
-    | :repeat | # of repeats after initial firing; requires :every; illegal with a spec; |
-    | :until  | java.util.Date or ms since epoch; illegal with a spec                    |
+    | :at     | java.util.Date, millis since epoch, or "HHmm"         |
+    | :in     | start in millis from now, period alias or period spec |
+    | :every  | delay interval in millis, period alias or period spec |
+    | :repeat | # of repeats after initial firing; requires :every    |
+    | :until  | java.util.Date, millis since epoch, or "HHmm"         |
 
     Examples: [[file:~/src/feature-demo/src/demo/jobs.clj::(ns%20demo.jobs][demo/jobs.clj]]
 
