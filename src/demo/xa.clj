@@ -21,15 +21,18 @@
   (sql/create-table :things [:name "varchar(50)"]))
 
 ;;; Write a thing
-(defn write-thing-to-db [name]
-  (sql/with-connection spec
-    (sql/insert-records :things {:name name})))
+(defn write-thing [name]
+  (sql/insert! spec :things {:name name}))
+
+;;; Delete all the things
+(defn delete-all-the-things []
+  (sql/delete! spec :things [true]))
 
 ;;; Count all the things
-(defn count-things-in-db []
-  (sql/with-connection spec
-    (sql/with-query-results rows ["select count(*) c from things"]
-      (int ((first rows) :c)))))
+(defn count-all-the-things []
+  (-> (sql/query spec ["select count(*) c from things"])
+      first
+      :c))
 
 ;;; Attempt multi-resource transaction
 (defn attempt-transaction [name & [f]]
@@ -46,8 +49,35 @@
 
 
 (attempt-transaction "foo")
-(attempt-transaction "bar" #(throw (Exception. "rollback")))
+(attempt-transaction "bar" #(throw (Exception. "testing rollback")))
 
 [(msg/receive "/queue/xa" :timeout 1000)
- (count-things-in-db)
+ (count-all-the-things)
  cache]
+
+
+(comment
+  ;;; Examples for Oracle, MySQL, PostgreSQL, and SQL Server
+  
+  ;;; rds-create-db-instance oracle -s 10 -c db.m1.small -e oracle-se -u myuser -p mypassword --db-name mydb
+  (xa/datasource "oracle" {:adapter  "oracle"
+                           :url      "jdbc:oracle:thin:@//oracle.cpct4icp7nye.us-east-1.rds.amazonaws.com:1521/mydb"
+                           :username "myuser"
+                           :password "mypassword"})
+
+  ;;; rds-create-db-instance mysql -s 10 -c db.m1.small -e mysql -u myuser -p mypassword --db-name mydb
+  (xa/datasource "mysql" {:adapter "mysql"
+                          :url     "jdbc:mysql://mysql.cpct4icp7nye.us-east-1.rds.amazonaws.com/mydb?user=myuser&password=mypassword"})
+
+  ;;; configured locally
+  (xa/datasource "postgres" {:adapter  "postgresql"
+                             :username "myuser"
+                             :password "mypassword"
+                             :database "mydb"})
+
+  ;;; nfi since --db-name isn't supported for RDS sqlserver-se instances
+  (xa/datasource "mssql" {:adapter  "mssql"
+                          :host     "mssql.cpct4icp7nye.us-east-1.rds.amazonaws.com"
+                          :username "myuser"
+                          :password "mypassword"
+                          :database "mydb"}))
