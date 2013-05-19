@@ -60,6 +60,8 @@
 
   Functions whose side effects invoke JBoss services
 
+  An alternative to Java interop, which we also expose
+
 ** Basic initialization
 
    - plugin creates a deployment descriptor with a :root
@@ -147,8 +149,9 @@
 
 ** immutant.cache
 
-   - infinispan HA transactional data grid, key/value store
+   - infinispan HA transactional data grid
    - flexible clustering: :replicated, :invalidated, :distributed
+   - strong consistency by default, but trades C for A when P
    - eviction, expiration, persistence, conditional writes
    - implements core.cache/CacheProtocol
    - can be used with core.memoize/PluggableMemoization
