@@ -38,7 +38,7 @@
 (defn attempt-transaction [name & [f]]
   (try
     (xa/transaction
-     (write-thing-to-db name)
+     (write-thing name)
      (msg/publish "/queue/xa" name)
      (cache/put cache :name name)
      (tx/not-supported
