@@ -7,6 +7,7 @@
    The [[file:images/immutant-runtime.png][Immutant runtime]] compared to [[file:images/tomcat-runtime.png][Jetty or Tomcat]]
 
 *** simpler to manage
+*** packaging is optional
 *** all provided services scaled same way
     by adding nodes to the cluster
 
@@ -90,7 +91,7 @@
    - message content can be just about anything
    - arbitrarily nested collections of standard data types can be
      transparently exchanged with any :edn or :json peers.
-   - messages can be prioritized, filtered, expired, and evicted
+   - messages can be prioritized, filtered, expired
    - all messaging operations are transactional
    - durable topic subscribers are supported
    - destinations may be remote

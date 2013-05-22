@@ -3,12 +3,12 @@
 
 ;;; create queue, if not already
 (def q "queue")
-(msg/start q)
+(msg/start q :durable false)
 
 ;;; publish some messages
 (msg/publish q :ping)
 (msg/publish q {:a 1, :b [1 2 3]})
-(msg/publish q 42, :priority :high, :ttl 1000)
+(msg/publish q 42, :priority :high, :ttl 30000)
 
 ;;; consume them
 (let [messages (msg/message-seq q)]
@@ -23,7 +23,7 @@
 
 ;;; create topic
 (def t "topic")
-(msg/start t)
+(msg/start t :durable false)
 
 ;;; durable topic subscriber
 (msg/receive t, :client-id "jim", :timeout 1)
