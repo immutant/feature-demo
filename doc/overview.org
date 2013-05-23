@@ -68,9 +68,9 @@
    - plugin creates a deployment descriptor with a :root
    - dependencies in project.clj set up effective classpath
    - 3 bootstrap options tried in order
-     * (get-in project [:immutant :init])
-     * (require immutant.init)
-     * (get-in project [:ring :handler])
+     - (get-in project [:immutant :init])
+     - (require immutant.init)
+     - (get-in project [:ring :handler])
 
 ** immutant.web
 
@@ -82,7 +82,7 @@
      stacktraces?, :auto-reload?, :reload-paths
    - handy reflection functions in immutant.util
 
-   examples: [[file:~/src/feature-demo/src/demo/web.clj::(ns%20demo.web][demo/web.clj]]
+   examples: [[../src/demo/web.clj::(ns%20demo.web][demo/web.clj]]
 
 ** immutant.messaging
 
@@ -97,20 +97,20 @@
    - destinations may be remote
 
    - destination lifecycle is robust and dynamic
-     * (start)
-     * (stop)
+     - (start)
+     - (stop)
 
    - produce
-     * (publish)
-     * (request)
+     - (publish)
+     - (request)
 
    - consume
-     * (receive)
-     * (message-seq)
-     * (listen)
-     * (respond)
+     - (receive)
+     - (message-seq)
+     - (listen)
+     - (respond)
 
-   Examples: [[file:~/src/feature-demo/src/demo/messaging.clj::(ns%20demo.messaging][demo/messaging.clj]]
+   Examples: [[../src/demo/messaging.clj::(ns%20demo.messaging][demo/messaging.clj]]
 
 *** immutant.pipeline
 
@@ -147,7 +147,7 @@
     | :repeat | # of repeats after initial firing; requires :every                   |
     | :until  | java.util.Date, millis since epoch, or "HHmm"                        |
 
-    Examples: [[file:~/src/feature-demo/src/demo/jobs.clj::(ns%20demo.jobs][demo/jobs.clj]]
+    Examples: [[../src/demo/jobs.clj::(ns%20demo.jobs][demo/jobs.clj]]
 
 ** immutant.cache
 
@@ -160,14 +160,14 @@
    - can be shared with ruby apps in overlaid-torquebox
    - mutable operations in [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.cache.html#var-Mutable][immutant.cache/Mutable]] protocol
 
-   Examples: [[file:~/src/feature-demo/src/demo/cache.clj::(ns%20demo.cache][demo/cache.clj]]
+   Examples: [[../src/demo/cache.clj::(ns%20demo.cache][demo/cache.clj]]
 
 ** immutant.daemons
 
    - pretty darn [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.daemons.html#var-Daemon][simple]]
    - most interesting as HA singleton in cluster
 
-   Examples: [[file:../src/demo/daemons.clj::(ns%20demo.daemons][demo/daemons.clj]]
+   Examples: [[../src/demo/daemons.clj::(ns%20demo.daemons][demo/daemons.clj]]
 
 ** immutant.xa
 
@@ -176,7 +176,7 @@
    - use immutant.xa/datasource to create transactional resources
    - macros instead of scope annotations, e.g. required, requires-new, not-supported
 
-   Examples: [[file:~/src/feature-demo/src/demo/xa.clj::(ns%20demo.xa][demo/xa.clj]]
+   Examples: [[../src/demo/xa.clj::(ns%20demo.xa][demo/xa.clj]]
 
 
 * Other stuff
@@ -200,8 +200,10 @@
 ** Clustering
 
 *** If multicast is enabled, it's easy
-    
-    $ lein immutant run --clustered
+
+    #+begin_src sh
+      $ lein immutant run --clustered
+    #+end_src
 
 *** If multicast is disabled, there will be XML dragons.
     On Amazon, S3_PING can provide dynamic peer discovery
@@ -210,13 +212,17 @@
 
 **** with port offset
 
-     $ lein immutant run --clustered -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
-     $ lein immutant run --clustered -Djboss.node.name=two -Djboss.server.data.dir=/tmp/two -Djboss.socket.binding.port-offset=100
+     #+begin_src sh
+       $ lein immutant run --clustered -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
+       $ lein immutant run --clustered -Djboss.node.name=two -Djboss.server.data.dir=/tmp/two -Djboss.socket.binding.port-offset=100
+     #+end_src
 
 **** or IP aliases
 
-     $ sudo ifconfig en1 inet 192.168.6.201/32 alias
-     $ lein immutant run --clustered -b 192.168.6.201 -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
+     #+begin_src sh
+       $ sudo ifconfig en1 inet 192.168.6.201/32 alias
+       $ lein immutant run --clustered -b 192.168.6.201 -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
+     #+end_src
 
 ** OpenShift
 
@@ -227,9 +233,10 @@
 ** In-container testing
 
    Provided by the [[https://github.com/immutant/fntest][fntest]] library
+   #+begin_src sh
+     $ lein immutant test
+   #+end_src
 
-   $ lein immutant test
-
-** Web sockets 
+** Web sockets
    
    With Undertow, the new JBoss non-blocking web server coming in AS8
