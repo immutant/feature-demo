@@ -10,7 +10,7 @@
 (cache/put foo :a 1)
 
 ;;; Override its time-to-live
-(cache/put foo :a 1 {:ttl 1, :units :hours})
+(cache/put foo :a 1 {:ttl [1 :hour]})
 
 ;;; Add all the entries in the map to the cache
 (cache/put-all foo {:b 2, :c 3})
@@ -79,7 +79,7 @@
 
 ;;; Other than the function to be memoized, arguments are the same as
 ;;; for the cache function.
-(def memoized-fn (cache/memo slow-fn "memo", :ttl 5, :units :minutes))
+(def memoized-fn (cache/memo slow-fn "memo", :ttl [5 :minutes]))
 
 ;;; Invoking the memoized function fills the cache with the result
 ;;; from the slow function the first time it is called.
