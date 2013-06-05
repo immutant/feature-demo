@@ -13,7 +13,7 @@
 ;;; consume them
 (let [messages (msg/message-seq q)]
   (if (= 42 (msg/receive q))
-    (take 2 messages)))
+    (doall (take 2 messages))))
 
 ;;; filter them
 (def results (atom []))
