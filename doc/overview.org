@@ -30,8 +30,6 @@
 
 *** Services and apps are isolated, but they share the JVM
 *** App deps can conflict with deps used by Immutant
-    e.g. noir->bultitude->dynapath
-
 *** Relative paths are relative to the server, not the app
 
 
@@ -40,21 +38,18 @@
 ** Tasks
 
    - lein immutant install [--full]
-   - lein immutant overlay [torquebox]
+   - lein immutant overlay (torquebox|hotrod)
 
    - lein immutant run [--clustered]
-
-   - lein immutant new foo
-   - lein immutant init
 
    - lein immutant deploy [--archive --context-path --virtual-host]
    - lein immutant undeploy
 
-   - lein immutant list
+   - lein immutant test
+
+   - lein immutant list [--installs]
    - lein immutant version
    - lein immutant env
-
-   - lein immutant test
 
 
 * Immutant libraries
@@ -77,7 +72,7 @@
    - app segmentation via virtual host and/or context path
    - automatic session replication in a cluster
    - auto-reloading in dev mode
-   - static resources [ring/ring-core "1.2.0-beta1"] or [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.web.html#var-wrap-resource][immutant.web/wrap-resource]]
+   - static resources served via [[http://ring-clojure.github.io/ring/ring.middleware.resource.html#var-wrap-resource][ring.middleware.resource/wrap-resource]]
    - :ring config, e.g. :handler, :init, :destroy,
      stacktraces?, :auto-reload?, :reload-paths
    - handy reflection functions in immutant.util
@@ -86,7 +81,7 @@
 
 ** immutant.messaging
 
-   - two destination abstractions: topics and queues
+   - two primary destination abstractions: queues and topics
    - consumers automatically load-balanced across a cluster
    - message content can be just about anything
    - arbitrarily nested collections of standard data types can be
@@ -105,9 +100,9 @@
      - (request)
 
    - consume
+     - (listen)
      - (receive)
      - (message-seq)
-     - (listen)
      - (respond)
 
    Examples: [[../src/demo/messaging.clj][demo/messaging.clj]]
@@ -151,14 +146,15 @@
 
 ** immutant.cache
 
-   - infinispan HA transactional data grid
-   - flexible clustering: :replicated, :invalidated, :distributed
+   - infinispan transactional data grid
+   - flexible clustering: replicated, invalidated, distributed
    - strong consistency by default, but trades C for A when P
    - eviction, expiration, persistence, conditional writes
    - implements core.cache/CacheProtocol
    - can be used with core.memoize/PluggableMemoization
    - can be shared with ruby apps in overlaid-torquebox
    - mutable operations in [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.cache.html#var-Mutable][immutant.cache/Mutable]] protocol
+   - functional alternative: [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.cache.html#var-swap%2521][immutant.cache/swap!]]
 
    Examples: [[../src/demo/cache.clj][demo/cache.clj]]
 
@@ -166,6 +162,7 @@
 
    - pretty darn [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.daemons.html#var-Daemon][simple]]
    - most interesting as HA singleton in cluster
+   - use with i.m/listen to create a singleton message consumer
 
    Examples: [[../src/demo/daemons.clj][demo/daemons.clj]]
 
@@ -173,7 +170,8 @@
 
    - multi-resource distributed transactions
    - messaging and caching automatically transactional
-   - use immutant.xa/datasource to create transactional resources
+   - use immutant.xa/datasource to create transactional data stores
+     for H2, Oracle, MySQL, Postgres, or MS SQL Server
    - macros instead of scope annotations, e.g. required, requires-new, not-supported
 
    Examples: [[../src/demo/xa.clj][demo/xa.clj]]
@@ -239,4 +237,4 @@
 
 ** Web sockets
    
-   With Undertow, the new JBoss non-blocking web server coming in AS8
+   With Undertow, the new JBoss non-blocking web server coming in Wildfly
