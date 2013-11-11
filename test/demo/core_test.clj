@@ -1,8 +1,10 @@
 (ns demo.core-test
   (:use clojure.test
-        immutant.init))
+        immutant.init
+        [immutant.util :only (in-immutant?)]))
 
 (deftest load-everything
-  (load-all)
+  (if (in-immutant?)
+    (load-all))
   (is true))
 
