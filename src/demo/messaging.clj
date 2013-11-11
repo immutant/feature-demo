@@ -12,12 +12,13 @@
 
 ;;; consume them
 (let [messages (msg/message-seq q)]
-  (if (= 42 (msg/receive q))
+  (if (= 42 (msg/receive q, :timeout 1000))
     (doall (take 2 messages))))
 
 ;;; filter them
 (def results (atom []))
 (msg/listen q #(swap! results conj (:time %)), :selector "type='date'")
+(msg/publish q {:time "now"}, :properties {:type "date"})
 (msg/publish q (with-meta {:time (java.util.Date.)} {:type "date"}))
 @results
 
@@ -28,10 +29,8 @@
 ;;; durable topic subscriber
 (msg/receive t, :client-id "jim", :timeout 1)
 (msg/publish t "just call my name, i'll be there")
-(swap! results conj (msg/receive t, :client-id "jim"))
-@results
+(msg/receive t, :client-id "jim")
 
 ;;; request/response
 (msg/respond q (partial apply +), :selector "op='sum'")
-(swap! results conj @(msg/request q (with-meta [1 2 3 4 5] {:op "sum"})))
-@results
+@(msg/request q (with-meta [1 2 16 23] {:op "sum"}))

@@ -27,6 +27,7 @@
 (web/start "/hello" world-greeter)
 
 
+;;; Lifted from https://github.com/ring-clojure/ring/wiki/Sessions
 (defn counter [{session :session}]
   (let [count (:count session 0)
         session (assoc session :count (inc count))]
@@ -40,7 +41,7 @@
 
 
 ;;; Static resource middleware
-;;; Use immutant.web/wrap-resource unless >=1.2 ring
+;;; See https://github.com/ring-clojure/ring/wiki/Static-Resources
 (web/start (ring-resource/wrap-resource #'request-dumper "public"))
 
 

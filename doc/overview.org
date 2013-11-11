@@ -35,15 +35,17 @@
 
 * The [[https://github.com/immutant/lein-immutant][lein-immutant]] plugin
 
+  As of version 1.1.0 
+
 ** Tasks
 
    - lein immutant install [--full]
    - lein immutant overlay (torquebox|hotrod)
 
-   - lein immutant run [--clustered]
-
    - lein immutant deploy [--archive --context-path --virtual-host]
    - lein immutant undeploy
+
+   - lein immutant run [--clustered]
 
    - lein immutant test
 
@@ -113,8 +115,6 @@
     passed the result of the previous function. Built atop messaging,
     the concurrency of each step in a pipeline can vary and all steps
     are load-balanced across a cluster.
-
-    Alpha
 
 ** immutant.jobs
 
@@ -224,13 +224,18 @@
 
 ** OpenShift
 
-   Checkout the [[https://github.com/openshift-quickstart/immutant-quickstart][quickstart]]
+   Checkout the [[https://github.com/openshift-quickstart/immutant-quickstart][quickstart]] or the [[https://github.com/immutant/openshift-immutant-cart][v2 cartridge]]
 
    Should be a good example of working ec2 clustering config (TCPPING)
+
+   Will eventually use Docker
 
 ** In-container testing
 
    Provided by the [[https://github.com/immutant/fntest][fntest]] library
+
+   Supports both clojure.test and [[https://github.com/marick/Midje][Midje]] 
+
    #+begin_src sh
      $ lein immutant test
    #+end_src

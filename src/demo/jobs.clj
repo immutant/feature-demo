@@ -31,7 +31,7 @@
                :every [5 :seconds])
 
 ;;; Numbers are milliseconds
-(jobs/schedule "4-times-every-10ms-in-500ms"  
+(jobs/schedule "every-10ms-in-500ms-4-times"  
                #(println (Date.) "test")
                :in     500
                :every  10
