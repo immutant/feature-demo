@@ -54,11 +54,13 @@
    - lein immutant env
 
 
-* Immutant libraries
+* Immutant API's
 
   Functions whose side effects invoke JBoss services
 
   An alternative to Java interop, which we also expose
+
+  Our [[file:~/src/feature-demo][demonstration app]]
 
 ** Basic initialization
 
