@@ -45,7 +45,8 @@
       (cache/put cache :attempts (inc (or (:attempts cache) 0))))
      (if f (f)))
     (catch Exception e
-      (println "Caught exception:" (.getMessage e)))))
+      (if (not= "testing rollback" (.getMessage e))
+        (throw e)))))
 
 
 (attempt-transaction "foo")

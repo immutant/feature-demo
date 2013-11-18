@@ -8,4 +8,5 @@
                  [com.h2database/h2 "1.3.160"]
                  [org.clojure/java.jdbc "0.3.0-alpha4"]
                  [org.immutant/immutant "1.0.2"]]
-  :profiles {:openshift {:immutant {:init immutant.init/load-all}}})
+  :profiles {:openshift {:immutant {:init immutant.init/load-all}}
+             :dev-user {:source-paths ["dev"]}})
