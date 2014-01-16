@@ -9,7 +9,7 @@
 (msg/start "/queue/xa")
 
 ;;; And an Infinispan cache
-(def cache (cache/cache "xa"))
+(def cache (cache/lookup-or-create "xa"))
 
 ;;; And a transactional datasource
 (defonce h2 (xa/datasource "h2" {:adapter "h2" :database "mem:foo"}))

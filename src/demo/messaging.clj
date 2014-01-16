@@ -24,7 +24,7 @@
 
 ;;; create topic
 (def t "topic")
-(msg/start t :durable false)
+(msg/start t)
 
 ;;; durable topic subscriber
 (msg/receive t, :client-id "jim", :timeout 1)
