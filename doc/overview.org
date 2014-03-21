@@ -1,57 +1,18 @@
 [[file:images/immutant_logo.jpg]]
 
-* Immutant is an Application Server
+* What is Immutant?
 
-** An integrated stack
+  A collection of libraries that can be embedded within any Clojure
+  application. Optionally, the application can be deployed to a stock
+  [[http://wildfly.org][WildFly]] application server.
 
-   The [[file:images/immutant-runtime.png][Immutant runtime]] compared to [[file:images/tomcat-runtime.png][Jetty or Tomcat]]
+* The [[https://github.com/immutant/lein-immutant/tree/2x-dev][lein-immutant]] plugin
 
-*** simpler to manage
-*** packaging is optional
-*** all provided services scaled same way
-    by adding nodes to the cluster
-
-
-** Analogous to an operating system
-
-*** OS provides sockets, file systems, init.d, etc
-*** AS provides clustering, messaging, scheduling, etc
-
-
-** Better resource utilization
-*** RAM
-    - 1 Immutant with 3 apps < 3 Jetty instances
-    - 1 Immutant with 3 *web* apps = 1 Jetty with 3 apps
-*** Disk
-    Dependent libs in ~/.m2/repository
-
-
-** Risks
-
-*** Services and apps are isolated, but they share the JVM
-*** App deps can conflict with deps used by Immutant
-*** Relative paths are relative to the server, not the app
-
-
-* The [[https://github.com/immutant/lein-immutant][lein-immutant]] plugin
-
-  As of version 1.1.0 
+  Only required if deploying your app to WildFly.
 
 ** Tasks
 
-   - lein immutant install [--full]
-   - lein immutant overlay (torquebox|hotrod)
-
-   - lein immutant deploy [--archive --context-path --virtual-host]
-   - lein immutant undeploy
-
-   - lein immutant run [--clustered]
-
-   - lein immutant test
-
-   - lein immutant list [--installs]
-   - lein immutant version
-   - lein immutant env
+   - lein immutant deploy path-wildfly-install
 
 
 * Immutant API's
@@ -64,11 +25,11 @@
 
 ** Basic initialization
 
-   - plugin creates a deployment descriptor with a :root
+   - plugin creates a jar file and associated properties file
    - dependencies in project.clj set up effective classpath
    - 3 bootstrap options tried in order
      - (get-in project [:immutant :init])
-     - (require immutant.init)
+     - (get-in project [:main]
      - (get-in project [:ring :handler])
 
 ** immutant.web
@@ -79,52 +40,27 @@
    - static resources served via [[http://ring-clojure.github.io/ring/ring.middleware.resource.html#var-wrap-resource][ring.middleware.resource/wrap-resource]]
    - :ring config, e.g. :handler, :init, :destroy,
      stacktraces?, :auto-reload?, :reload-paths
-   - handy reflection functions in immutant.util
 
    examples: [[../src/demo/web.clj][demo/web.clj]]
 
-** immutant.messaging
+** immutant.scheduling
 
-   - two primary destination abstractions: queues and topics
-   - consumers automatically load-balanced across a cluster
-   - message content can be just about anything
-   - arbitrarily nested collections of standard data types can be
-     transparently exchanged with any :edn or :json peers.
-   - messages can be prioritized, filtered, expired
-   - all messaging operations are transactional
-   - durable topic subscribers are supported
-   - destinations may be remote
-
-   - destination lifecycle is robust and dynamic
-     - (start)
-     - (stop)
-
-   - produce
-     - (publish)
-     - (request)
-
-   - consume
-     - (listen)
-     - (receive)
-     - (message-seq)
-     - (respond)
-
-   Examples: [[../src/demo/messaging.clj][demo/messaging.clj]]
-
-*** immutant.pipeline
-
-    A composition of functions, i.e. steps, where each function is
-    passed the result of the previous function. Built atop messaging,
-    the concurrency of each step in a pipeline can vary and all steps
-    are load-balanced across a cluster.
-
-** immutant.jobs
-
-   - scheduled jobs share the lifecycle of your app
-   - singleton by default (only one node in cluster)
+   - schedules specified by maps created with helper functions
+   - singleton by default (runs on only one node in cluster)
    - not durable
 
-*** "cron" syntax
+*** Parameters
+
+    | :at     | java.util.Date, millis since epoch, or a military time string "HHmm" |
+    | :in     | start in millis from now, period alias or period spec                |
+    | :every  | delay interval in millis, period alias or period spec                |
+    | :repeat | # of repeats after initial firing; with :every                       |
+    | :until  | java.util.Date, millis since epoch, or "HHmm"; with :every           |
+    | :cron   | a Quartz cron spec, described below                                  |
+
+    Examples: [[../src/demo/scheduling.clj][demo/scheduling.clj]]
+
+*** cron specs
 
     dash for spans, comma for multiples, division for rates
 
@@ -136,112 +72,12 @@
     | dow     |  1-7 or SUN-SAT | ?        |
     | year    |       1970-2099 | optional |
 
-*** "at" options
 
-    | :at     | java.util.Date, millis since epoch, or a military time string "HHmm" |
-    | :in     | start in millis from now, period alias or period spec                |
-    | :every  | delay interval in millis, period alias or period spec                |
-    | :repeat | # of repeats after initial firing; requires :every                   |
-    | :until  | java.util.Date, millis since epoch, or "HHmm"                        |
+** immutant.messaging
 
-    Examples: [[../src/demo/jobs.clj][demo/jobs.clj]]
+   COMING SOON
 
-** immutant.cache
-
-   - infinispan transactional data grid
-   - flexible clustering: replicated, invalidated, distributed
-   - strong consistency by default, but trades C for A when P
-   - eviction, expiration, persistence, conditional writes
-   - implements core.cache/CacheProtocol
-   - can be used with core.memoize/PluggableMemoization
-   - can be shared with ruby apps in overlaid-torquebox
-   - mutable operations in [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.cache.html#var-Mutable][immutant.cache/Mutable]] protocol
-   - functional alternative: [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.cache.html#var-swap%2521][immutant.cache/swap!]]
-
-   Examples: [[../src/demo/cache.clj][demo/cache.clj]]
-
-** immutant.daemons
-
-   - pretty darn [[http://immutant.org/builds/LATEST/html-docs/apidoc/immutant.daemons.html#var-Daemon][simple]]
-   - most interesting as HA singleton in cluster
-   - use with i.m/listen to create a singleton message consumer
-
-   Examples: [[../src/demo/daemons.clj][demo/daemons.clj]]
-
-** immutant.xa
-
-   - multi-resource distributed transactions
-   - messaging and caching automatically transactional
-   - use immutant.xa/datasource to create transactional data stores
-     for H2, Oracle, MySQL, Postgres, or MS SQL Server
-   - macros instead of scope annotations, e.g. required, requires-new, not-supported
-
-   Examples: [[../src/demo/xa.clj][demo/xa.clj]]
-
-
-* Other stuff
-
-** Videos
-
-   - [[http://www.infoq.com/presentations/Introducing-Immutant][Clojure/West 2012]] -- a dated overview of 5/6 of the api's
-   - [[http://www.youtube.com/watch?v=P9tfxdcpkCc][Clojure/Conj 2012]] -- building a non-trivial app with an Immutant REPL
-   - [[http://www.youtube.com/watch?v=KqdY0wz_Rb0][Overlay Screencast]] -- overlay TorqueBox to share messaging/caching
-
-** Overlay
+** immutant.caching
    
-   In theory, a means to overlay the modules and config of any
-   JBoss-derived distribution, e.g. Immutant, TorqueBox, Escalante, or
-   as.js, onto any JBoss installation.
+   COMING SOON
 
-   TorqueBox and Immutant applications can exchange messages and share
-   cached data encoded with either EDN or JSON. See the [[http://immutant.org/news/2013/03/07/overlay-screencast/][screencast]] for
-   examples.
-
-** Clustering
-
-*** If multicast is enabled, it's easy
-
-    #+begin_src sh
-      $ lein immutant run --clustered
-    #+end_src
-
-*** If multicast is disabled, there will be XML dragons.
-    On Amazon, S3_PING can provide dynamic peer discovery
-
-*** Simulate on your laptop
-
-**** with port offset
-
-     #+begin_src sh
-       $ lein immutant run --clustered -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
-       $ lein immutant run --clustered -Djboss.node.name=two -Djboss.server.data.dir=/tmp/two -Djboss.socket.binding.port-offset=100
-     #+end_src
-
-**** or IP aliases
-
-     #+begin_src sh
-       $ sudo ifconfig en1 inet 192.168.6.201/32 alias
-       $ lein immutant run --clustered -b 192.168.6.201 -Djboss.node.name=one -Djboss.server.data.dir=/tmp/one
-     #+end_src
-
-** OpenShift
-
-   Checkout the [[https://github.com/openshift-quickstart/immutant-quickstart][quickstart]] or the [[https://github.com/immutant/openshift-immutant-cart][v2 cartridge]]
-
-   Should be a good example of working ec2 clustering config (TCPPING)
-
-   Will eventually use Docker
-
-** In-container testing
-
-   Provided by the [[https://github.com/immutant/fntest][fntest]] library
-
-   Supports both clojure.test and [[https://github.com/marick/Midje][Midje]] 
-
-   #+begin_src sh
-     $ lein immutant test
-   #+end_src
-
-** Web sockets
-   
-   With Undertow, the new JBoss non-blocking web server coming in Wildfly
