@@ -1,33 +1,34 @@
 (ns demo.scheduling
-  (:refer-clojure :exclude (repeat))
+  (:refer-clojure :exclude [repeat])
   (:require [immutant.scheduling :refer [schedule unschedule repeat
                                          at in every until cron]])
   (:import java.util.Date))
 
-(defn foo [] (println (Date.) "foo"))
+(defn print-time [] (println (Date.)))
 
-;;; A period spec is a vector of a number and keyword
-(schedule "every-5s-forever" #'foo
-  (every 5 :seconds))
+(def every-5s
+  (or {:every [5 :seconds]}
+    (every 5 :seconds)))
 
-;;; Dates or strings or ms-since-epoch
-(schedule "run-reports" #(println "reporting")
-  (-> (at (or (Date.) "0400" 1395439646983))
+(def daily
+  (-> (at (or (Date.) "1830" 1395439646983))
     (every :day)))
 
-;;; Fancy cron spec feature
-(schedule "every-5s-forever" #(println (Date.))
-  (cron "*/5 * * * * ?"))
+(def in-5m-until-5pm
+  (-> (in 5 :minutes)
+    (every 2 :hours, 30 :minutes)
+    (until "1700")))
 
-;;; Remember the 0's!
-(schedule "nothing-at-9am" #(println "nothing")
+(def nine-am
   (cron "0 0 9 * * ?"))
 
-;;; Numbers are milliseconds
-(schedule "every-10ms-in-500ms-4-times"
-  #(println (Date.) "test")
+(def every-5s-cron
+  (cron "*/5 * * * * ?"))
+
+(def every-10ms-in-500ms-4-times
   (-> (in 500)
     (every 10)
     (repeat 3)))
 
-(unschedule "every-5s-forever")
+(defn -main [& args]
+  (schedule "timer" print-time every-5s))
