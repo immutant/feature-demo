@@ -6,4 +6,5 @@
   :dependencies [[org.clojure/clojure "1.6.0-RC1"]
                  [org.immutant/web "2.0.0-SNAPSHOT"]
                  [org.immutant/scheduling "2.0.0-SNAPSHOT"]]
+  :plugins [[lein-immutant "2.0.0-SNAPSHOT"]]
   :main demo.core)
