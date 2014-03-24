@@ -1,7 +1,6 @@
 (ns demo.scheduling
-  (:refer-clojure :exclude [repeat])
-  (:require [immutant.scheduling :refer [schedule unschedule repeat
-                                         at in every until cron]])
+  (:require [immutant.scheduling :refer [schedule unschedule at in
+                                         limit every until cron]])
   (:import java.util.Date))
 
 (defn print-time [] (println (Date.)))
@@ -28,7 +27,7 @@
 (def every-10ms-in-500ms-4-times
   (-> (in 500)
     (every 10)
-    (repeat 3)))
+    (limit 4)))
 
 (defn -main [& args]
   (schedule "timer" print-time every-5s))
