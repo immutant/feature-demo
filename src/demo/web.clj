@@ -31,7 +31,7 @@
 (defn counter [{session :session}]
   (let [count (:count session 0)
         session (assoc session :count (inc count))]
-    (-> (ring-util/response (str "You accessed this page " count " times."))
+    (-> (ring-util/response (str "You accessed this page " count " times\n"))
         (assoc :session session))))
 ;;; Use Immutant's session store for automatic replication
 (web/start "/counter"
