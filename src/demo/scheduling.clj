@@ -1,5 +1,5 @@
 (ns demo.scheduling
-  (:require [immutant.scheduling :refer [schedule unschedule at in
+  (:require [immutant.scheduling :refer [schedule stop at in
                                          limit every until cron]])
   (:import java.util.Date))
 
@@ -30,4 +30,5 @@
     (limit 4)))
 
 (defn -main [& args]
-  (schedule "timer" print-time every-5s))
+  (let [timer (schedule print-time every-5s)]
+    (schedule #(stop timer) (in 20 :seconds))))
