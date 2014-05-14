@@ -1,9 +1,10 @@
 (ns demo.scheduling
   (:require [immutant.scheduling :refer [schedule stop at in
-                                         limit every until cron]])
+                                         limit every until cron]]
+            [immutant.scheduling.joda :as j]
+            [clj-time.core :as t]
+            [clj-time.periodic :as p])
   (:import java.util.Date))
-
-(defn print-time [] (println (Date.)))
 
 (def every-5s
   (or {:every [5 :seconds]}
@@ -29,6 +30,12 @@
     (every 10)
     (limit 4)))
 
+(defn every-3s-lazy-seq []
+  (let [at (t/plus (t/now) (t/seconds 1))
+        every (t/seconds 3)]
+    (p/periodic-seq at every)))
+
 (defn -main [& args]
-  (let [timer (schedule print-time every-5s)]
-    (schedule #(stop timer) (in 20 :seconds))))
+  (let [beep (schedule #(prn "beep") every-5s)
+        boop (j/schedule #(prn "boop") (every-3s-lazy-seq))]
+    (schedule #(doall (map stop [beep boop])) (in 20 :seconds))))
