@@ -37,5 +37,5 @@
 
 (defn -main [& args]
   (let [beep (schedule #(prn "beep") every-5s)
-        boop (j/schedule #(prn "boop") (every-3s-lazy-seq))]
+        boop (j/schedule-seq #(prn "boop") (every-3s-lazy-seq))]
     (schedule #(doall (map stop [beep boop])) (in 20 :seconds))))
