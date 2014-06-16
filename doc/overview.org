@@ -14,6 +14,9 @@
 
    - lein immutant deploy path-wildfly-install
 
+* Using outside of WildFly
+
+  Set a =:main= in =project.clj=, and start with =lein run=.
 
 * Immutant API's
 
@@ -22,15 +25,6 @@
   An alternative to Java interop, which we also expose
 
   Our [[file:~/src/feature-demo][demonstration app]]
-
-** Basic initialization
-
-   - plugin creates a jar file and associated properties file
-   - dependencies in project.clj set up effective classpath
-   - 3 bootstrap options tried in order
-     - (get-in project [:immutant :init])
-     - (get-in project [:main]
-     - (get-in project [:ring :handler])
 
 ** immutant.web
 
@@ -73,11 +67,11 @@
     | year    |       1970-2099 | optional |
 
 
-** immutant.messaging
+* immutant.messaging
 
-   COMING SOON
+  - allows publishing and listening to queues/topics using HornetQ
+  - supports point-to-point, request-response messaging
 
 ** immutant.caching
-   
-   COMING SOON
 
+   COMING SOON
