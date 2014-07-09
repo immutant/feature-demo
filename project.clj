@@ -4,9 +4,9 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.immutant/web "2.x.incremental.139"]
-                 [org.immutant/scheduling "2.x.incremental.139"]
-                 [org.immutant/messaging "2.x.incremental.139"]
+                 [org.immutant/web "2.x.incremental.175"]
+                 [org.immutant/scheduling "2.x.incremental.175"]
+                 [org.immutant/messaging "2.x.incremental.175"]
                  [clj-time "0.7.0"]]
   :plugins [[lein-immutant "2.0.0-SNAPSHOT"]]
   :repositories [["Immutant 2.x incremental builds"
