@@ -16,8 +16,11 @@
 ;;; Put an entry in the cache
 (.put foo :a 1)
 
-;;; Override its time-to-live
+;;; Override its time-to-live...
 (.put foo :a 1, 1 TimeUnit/HOURS)
+;;; ...and its max idle time...
+(.put foo :a 1, 1 TimeUnit/HOURS, 20 TimeUnit/MINUTES)
+;;; ...also works for putIfAbsent, putAll, and replace
 
 ;;; Add all the entries in the map to the cache
 (.putAll foo {:b 2, :c 3})
