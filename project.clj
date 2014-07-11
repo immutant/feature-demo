@@ -7,6 +7,8 @@
                  [org.immutant/web "2.x.incremental.175"]
                  [org.immutant/scheduling "2.x.incremental.175"]
                  [org.immutant/messaging "2.x.incremental.175"]
+                 [org.immutant/caching "2.x.incremental.175"]
+                 [org.clojure/core.memoize "0.5.6"]
                  [clj-time "0.7.0"]]
   :plugins [[lein-immutant "2.0.0-SNAPSHOT"]]
   :repositories [["Immutant 2.x incremental builds"
