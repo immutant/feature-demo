@@ -9,6 +9,7 @@
 ;;; data structure. Of course, reading entries can be done with core
 ;;; Clojure functions.
 
+
 ;;; Writing
 
 (def foo (c/cache "foo", :ttl [5 :minutes], :idle [1 :minute]))
@@ -81,6 +82,35 @@
 
 ;;; Clear all entries
 (.clear baz)
+
+
+;;; Encoding
+
+;;; Cache entries not encoded by default, but may be "wrapped" in a
+;;; codec. Provided codecs include :edn, :json, and :fressian. The
+;;; latter two require additional dependencies: 'cheshire' and
+;;; 'org.clojure/data.fressian', respectively.
+(def encoded (c/with-codec baz :edn))
+
+(.put encoded :a {:b 42})
+(:a encoded)                            ;=> {:b 42}
+
+;;; Access via non-encoded caches still possible
+(get baz :a)                            ;=> nil
+(get baz ":a")                          ;=> "{:b 42}"
+
+;;; Infinispan caches don't allow null keys or values
+(try
+  (.put baz nil :a)                     ;=> Null keys are not supported!
+  (.put baz :b nil)                     ;=> Null values are not supported!
+  (catch NullPointerException _))
+
+;;; But nil keys and values are fine in an encoded cache
+(.put encoded nil :a)
+(.put encoded :b nil)
+(get encoded nil)                       ;=> :a
+(:b encoded)                            ;=> nil
+(contains? encoded :b)                  ;=> true
 
 
 ;;; Memoization
