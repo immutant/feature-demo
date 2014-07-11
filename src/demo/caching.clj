@@ -103,7 +103,7 @@
 (try
   (.put baz nil :a)                     ;=> Null keys are not supported!
   (.put baz :b nil)                     ;=> Null values are not supported!
-  (catch NullPointerException _))
+  (catch NullPointerException _ "ERROR!"))
 
 ;;; But nil keys and values are fine in an encoded cache
 (.put encoded nil :a)
@@ -111,6 +111,7 @@
 (get encoded nil)                       ;=> :a
 (:b encoded)                            ;=> nil
 (contains? encoded :b)                  ;=> true
+(contains? baz "nil")                   ;=> true
 
 
 ;;; Memoization
