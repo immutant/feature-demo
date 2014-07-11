@@ -1,6 +1,7 @@
 (ns demo.caching
   (:require [immutant.caching :as c]
-            [immutant.caching.core-memoize :refer [memo]]))
+            [immutant.caching.core-memoize :refer [memo]])
+  (:import java.util.concurrent.TimeUnit))
 
 ;;; Caches implement org.infinispan.Cache and
 ;;; java.util.concurrent.ConcurrentMap. They are mutable maps, so
@@ -16,8 +17,7 @@
 (.put foo :a 1)
 
 ;;; Override its time-to-live
-;;; TODO
-;;; (cache/put foo :a 1 {:ttl [1 :hour]})
+(.put foo :a 1, 1 TimeUnit/HOURS)
 
 ;;; Add all the entries in the map to the cache
 (.putAll foo {:b 2, :c 3})
