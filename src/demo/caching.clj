@@ -4,15 +4,25 @@
   (:import java.util.concurrent.TimeUnit))
 
 ;;; Caches implement org.infinispan.Cache and
-;;; java.util.concurrent.ConcurrentMap. They are mutable maps, so
-;;; changing them requires Java interop, as would any mutable Java
-;;; data structure. Of course, reading entries can be done with core
-;;; Clojure functions.
+;;; java.util.concurrent.ConcurrentMap
 
 
 ;;; Writing
 
 (def foo (c/cache "foo", :ttl [5 :minutes], :idle [1 :minute]))
+
+;;; The swap! function atomically updates cache entries by applying a
+;;; function to the current value or nil, if the key is missing. The
+;;; function should be side-effect free.
+
+(c/swap! foo :a (fnil inc 0))           ;=> 1
+(c/swap! foo :b (constantly "foo"))     ;=> "foo"
+(c/swap! foo :a inc)                    ;=> 2
+
+;;; Internally, swap! uses the ConcurrentMap methods, replace (CAS)
+;;; and putIfAbsent, to provide a consistent view of the cache to
+;;; callers. Of course, you can invoke these and other methods
+;;; directly using plain ol' Java interop...
 
 ;;; Put an entry in the cache
 (.put foo :a 1)
@@ -86,9 +96,9 @@
 
 ;;; Encoding
 
-;;; Cache entries not encoded by default, but may be "wrapped" in a
-;;; codec. Provided codecs include :edn, :json, and :fressian. The
-;;; latter two require additional dependencies: 'cheshire' and
+;;; Cache entries are not encoded by default, but may be decorated
+;;; with a codec. Provided codecs include :edn, :json, and :fressian.
+;;; The latter two require additional dependencies: 'cheshire' and
 ;;; 'org.clojure/data.fressian', respectively.
 (def encoded (c/with-codec baz :edn))
 
