@@ -13,4 +13,5 @@
   :plugins [[lein-immutant "2.0.0-SNAPSHOT"]]
   :repositories [["Immutant 2.x incremental builds"
                   "http://downloads.immutant.org/incremental/"]]
-  :main demo.core)
+  :main demo.core
+  :profiles {:uberjar {:aot :all}})
