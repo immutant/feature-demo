@@ -5,7 +5,7 @@
             [ring.middleware.resource :refer [wrap-resource]]
             [ring.util.response       :refer [response]]))
 
-(defn request-dumper
+(defn echo-request
   "Dump the request"
   [request]
   (response (with-out-str (pprint request))))
@@ -17,7 +17,7 @@
 
 (def assets
   "Serve static assets from resources/public/"
-  (wrap-resource #'request-dumper "public"))
+  (wrap-resource #'echo-request "public"))
 
 ;;; The Ring Session example: https://github.com/ring-clojure/ring/wiki/Sessions
 (defn counter [{session :session}]
@@ -28,5 +28,10 @@
 
 (defn -main
   [& {:as args}]
-  (run request-dumper args)
+
+  ;; this uses an Undertow handler by default, which is faster
+  (run echo-request args)
+
+  ;; using a servlet allows the session to be shared in a WildFly
+  ;; cluster and allow access to the session from websockets
   (run (create-servlet #'counter) :path "/counter"))
