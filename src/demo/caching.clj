@@ -164,7 +164,7 @@
 
 (defn -main [& args]
   "Schedule a counter"
-  (let [f #(prn (-> (c/cache "counter")
-                  (c/swap! :count (fnil inc 0))))]
+  (let [c (c/cache "counter")
+        f #(prn (c/swap! c :count (fnil inc 0)))]
     (schedule f :id "counter" :every [3 :seconds])))
 
