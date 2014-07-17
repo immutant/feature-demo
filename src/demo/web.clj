@@ -1,7 +1,7 @@
 (ns demo.web
-  (:require [clojure.pprint           :refer [pprint]]
-            [immutant.web             :as web]
-            [ring.util.response       :as ring-util]))
+  (:require [clojure.pprint     :refer [pprint]]
+            [immutant.web       :as web]
+            [ring.util.response :as ring-util]))
 
 (defn echo-request
   "Echoes the request back as a string."

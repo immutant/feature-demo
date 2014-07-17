@@ -1,40 +1,87 @@
 (ns demo.scheduling
-  (:require [immutant.scheduling      :as is]
-            [immutant.scheduling.joda :as ijoda]
-            [clj-time.core            :as time]
-            [clj-time.periodic        :as periodic])
+  (:require [immutant.scheduling :as sch]
+            [immutant.util       :as util]
+            immutant.scheduling.joda
+            clj-time.core
+            clj-time.periodic)
   (:import java.util.Date))
 
+;; scheduling specs are just maps. we provide optional helpers for
+;; generating thoes maps
 (def every-5s
-  (or {:every [5 :seconds]}
-    (is/every 5 :seconds)))
+  (or {:every (or 5000
+                [5 :seconds])}
+    (sch/every 5 :seconds)))
 
+;; :at can be a Date, a time as a string, or millis since epoch
 (def daily
-  (-> (is/at (or (Date.) "1830" 1395439646983))
-    (is/every :day)))
+  (-> (sch/at (or (Date.) "1830" 1395439646983))
+    (sch/every :day)))
 
+;; helpers optionally take a map as the first arg, so compose
 (def in-5m-until-5pm
-  (-> (is/in 5 :minutes)
-    (is/every 2 :hours, 30 :minutes)
-    (is/until "1700")))
+  (-> (sch/in 5 :minutes)
+    (sch/every 2 :hours, 30 :minutes)
+    (sch/until "1700")))
 
+;; cron-style strings are also supported
 (def nine-am
-  (is/cron "0 0 9 * * ?"))
+  (sch/cron "0 0 9 * * ?"))
 
 (def every-5s-cron
-  (is/cron "*/5 * * * * ?"))
+  (sch/cron "*/5 * * * * ?"))
 
 (def every-10ms-in-500ms-4-times
-  (-> (is/in 500)
-    (is/every 10)
-    (is/limit 4)))
+  (-> (sch/in 500)
+    (sch/every 10)
+    (sch/limit 4)))
 
+;; you can use clj-time periods if using clj-time
 (defn every-3s-lazy-seq []
-  (let [at (time/plus (time/now) (time/seconds 1))
-        every (time/seconds 3)]
-    (periodic/periodic-seq at every)))
+  (let [at (clj-time.core/plus (clj-time.core/now) (clj-time.core/seconds 1))
+        every (clj-time.core/seconds 3)]
+    (clj-time.periodic/periodic-seq at every)))
 
-(defn -main [& args]
-  (let [beep (is/schedule #(prn "beep") every-5s)
-        boop (ijoda/schedule-seq #(prn "boop") (every-3s-lazy-seq))]
-    (is/schedule #(doall (map is/stop [beep boop])) (is/in 20 :seconds))))
+(comment
+
+  ;; scheduling a simple job
+  (def every-2-job
+    (sch/schedule #(println "called")
+      (sch/every 2 :seconds)))
+
+  ;; the return value of the schedule call can be used to stop it
+  (sch/stop every-2-job)
+
+  ;; schedule a job from a clj-time sequence
+  (def seq-job
+    (immutant.scheduling.joda/schedule-seq #(println "a sequence")
+      (every-3s-lazy-seq)))
+
+  (sch/stop seq-job)
+
+  )
+
+(defn -main [& _]
+
+  ;; start a couple of jobs, along with a job to stop them in 20 seconds
+  (let [beep (sch/schedule #(println "beep") every-5s)
+        ;; schedule a clj-time sequence
+        boop (immutant.scheduling.joda/schedule-seq #(println "boop") (every-3s-lazy-seq))]
+    (sch/schedule
+      (fn []
+        (println "unscheduling beep & boop")
+        (sch/stop beep)
+        (sch/stop boop))
+      (sch/in 20 :seconds)))
+
+  ;; start singleton and non-singleton jobs to demo cluster failover
+  (when (util/in-container?)
+
+    ;; singleton jobs require an id
+    (sch/schedule #(println "I run on one node")
+      (-> every-5s
+        (sch/id :a_singleton)))
+
+    (sch/schedule #(println "I run on every node")
+      (-> every-5s
+        (sch/singleton false)))))

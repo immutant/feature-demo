@@ -13,11 +13,10 @@
   [dest-type:name & message]
   (with-open [connection (msg/connection :host "localhost" :port 5445)]
     (let [[dest-type dest-name] (str/split dest-type:name #":")
-          destination ((if (= dest-type "queue")
+          dest-fn (if (= dest-type "queue")
                          msg/queue msg/topic)
-                       dest-name
-                       :connection connection)
+          destination (dest-fn dest-name :connection connection)
           message (str/join " " message)]
       (println (format "Sending '%s' to %s %s"
                  message dest-type dest-name))
-      (msg/publish destination  message))))
+      (msg/publish destination message))))

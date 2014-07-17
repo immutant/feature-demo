@@ -1,7 +1,7 @@
 (ns demo.caching
-  (:require [immutant.caching :as c]
-            [immutant.caching.core-memoize :refer [memo]]
-            [immutant.scheduling :refer [schedule]])
+  (:require [immutant.caching              :as c]
+            [immutant.caching.core-memoize :as cmemo]
+            [immutant.scheduling           :as sch])
   (:import java.util.concurrent.TimeUnit))
 
 ;; Caches implement org.infinispan.Cache and
@@ -145,7 +145,7 @@
 
   ;; Other than the function to be memoized, arguments are the same as
   ;; for the cache function.
-  (def memoized-fn (memo slow-fn "memo", :ttl [5 :minutes]))
+  (def memoized-fn (cmemo/memo slow-fn "memo", :ttl [5 :minutes]))
 
   ;; Invoking the memoized function fills the cache with the result
   ;; from the slow function the first time it is called.
@@ -165,6 +165,9 @@
 (defn -main [& args]
   "Schedule a counter"
   (let [c (c/cache "counter")
-        f #(prn (c/swap! c :count (fnil inc 0)))]
-    (schedule f :id "counter" :every [3 :seconds])))
-
+        f #(println "Updating count to"
+             (c/swap! c :count (fnil inc 0)))]
+    (sch/schedule f
+      :id "counter"
+      :every [1 :second]
+      :singleton false)))
