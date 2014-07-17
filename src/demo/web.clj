@@ -3,7 +3,8 @@
             [immutant.web             :as web]
             [immutant.web.javax       :as javax]
             [ring.middleware.resource :as ring-resource]
-            [ring.util.response       :as ring-util]))
+            [ring.util.response       :as ring-util])
+  (:import [javax.servlet.http HttpServlet HttpServletRequest HttpServletResponse]))
 
 (defn echo-request
   "Echoes the request back as a string."
@@ -14,8 +15,17 @@
 (defn counter [{session :session}]
   (let [count (:count session 0)
         session (assoc session :count (inc count))]
+    (println "counter =>" count)
     (-> (ring-util/response (str "You accessed this page " count " times\n"))
         (assoc :session session))))
+
+(def servlet
+  (proxy [HttpServlet] []
+    (service [^HttpServletRequest request ^HttpServletResponse response]
+      (let [session (.getSession request)
+            count (or (.getAttribute session "count") 0)]
+        (-> response .getWriter (.write (str "You've visited " count " times\n")))
+        (.setAttribute session "count" (inc count))))))
 
 (defn -main
   [& {:as args}]
@@ -28,4 +38,6 @@
   (web/run
     (javax/create-servlet #'counter)
     :path "/counter")
+
+  (web/run servlet :path "/session")
   )

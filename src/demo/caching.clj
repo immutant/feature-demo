@@ -169,5 +169,5 @@
              (c/swap! c :count (fnil inc 0)))]
     (sch/schedule f
       :id "counter"
-      :every [1 :second]
+      :every [10 :seconds]
       :singleton false)))
