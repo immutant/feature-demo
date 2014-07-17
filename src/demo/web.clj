@@ -21,10 +21,11 @@
   [& {:as args}]
 
   ;; this uses an Undertow handler by default, which is faster than a servlet
-  (web/run echo-request args)
+  (web/run echo-request)
 
   ;; using a servlet allows the session to be shared in a WildFly
   ;; cluster and allow access to the session from websockets
   (web/run
     (javax/create-servlet #'counter)
-    :path "/counter"))
+    :path "/counter")
+  )
