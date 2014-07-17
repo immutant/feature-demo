@@ -19,14 +19,6 @@
     (-> (ring-util/response (str "You accessed this page " count " times\n"))
         (assoc :session session))))
 
-(def servlet
-  (proxy [HttpServlet] []
-    (service [^HttpServletRequest request ^HttpServletResponse response]
-      (let [session (.getSession request)
-            count (or (.getAttribute session "count") 0)]
-        (-> response .getWriter (.write (str "You've visited " count " times\n")))
-        (.setAttribute session "count" (inc count))))))
-
 (defn -main
   [& {:as args}]
 
@@ -39,5 +31,4 @@
     (javax/create-servlet #'counter)
     :path "/counter")
 
-  (web/run servlet :path "/session")
   )
