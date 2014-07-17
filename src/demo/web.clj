@@ -10,10 +10,6 @@
   [request]
   (ring-util/response (with-out-str (pprint request))))
 
-(def assets
-  "Serve static assets from resources/public/"
-  (ring-resource/wrap-resource #'echo-request "public"))
-
 ;;; The Ring Session example: https://github.com/ring-clojure/ring/wiki/Sessions
 (defn counter [{session :session}]
   (let [count (:count session 0)
