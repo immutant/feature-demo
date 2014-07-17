@@ -78,10 +78,10 @@
   (when (util/in-container?)
 
     ;; singleton jobs require an id
-    (sch/schedule #(println "I run on one node")
+    (sch/schedule #(println "I run on ONE node")
       (-> every-5s
         (sch/id :a_singleton)))
 
-    (sch/schedule #(println "I run on every node")
+    (sch/schedule #(println "I run on EVERY node")
       (-> every-5s
         (sch/singleton false)))))
