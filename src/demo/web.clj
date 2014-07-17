@@ -3,8 +3,7 @@
             [immutant.web             :as web]
             [immutant.web.javax       :as javax]
             [ring.middleware.resource :as ring-resource]
-            [ring.util.response       :as ring-util])
-  (:import [javax.servlet.http HttpServlet HttpServletRequest HttpServletResponse]))
+            [ring.util.response       :as ring-util]))
 
 (defn echo-request
   "Echoes the request back as a string."
