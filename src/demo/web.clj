@@ -1,9 +1,9 @@
 (ns demo.web
-  (:require [clojure.pprint           :refer [pprint]]
-            [immutant.web             :as web]
-            [immutant.web.javax       :as javax]
+  (:require [immutant.web             :as web]
             [ring.middleware.resource :as ring-resource]
-            [ring.util.response       :as ring-util]))
+            [ring.util.response       :as ring-util]
+            [immutant.web.servlet     :refer (create-servlet)]
+            [clojure.pprint           :refer (pprint)]))
 
 (defn echo-request
   "Echoes the request back as a string."
@@ -27,7 +27,6 @@
   ;; using a servlet allows the session to be shared in a WildFly
   ;; cluster and allow access to the session from websockets
   (web/run
-    (javax/create-servlet #'counter)
+    (create-servlet #'counter)
     :path "/counter")
-
   )
