@@ -4,18 +4,20 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.immutant/immutant "2.x.incremental.188"]
+                 [org.immutant/immutant "2.x.incremental.209"]
 
                  ;; Or bring in the immutant jars piecemeal
-                 ;; [org.immutant/caching    "2.x.incremental.188"]
-                 ;; [org.immutant/messaging  "2.x.incremental.188"]
-                 ;; [org.immutant/scheduling "2.x.incremental.188"]
-                 ;; [org.immutant/web        "2.x.incremental.188"]
+                 ;; [org.immutant/caching    "2.x.incremental.209"]
+                 ;; [org.immutant/messaging  "2.x.incremental.209"]
+                 ;; [org.immutant/scheduling "2.x.incremental.209"]
+                 ;; [org.immutant/web        "2.x.incremental.209"]
 
                  [ring/ring-core "1.3.0"]
+                 [ring/ring-devel "1.3.0"]
                  [org.clojure/core.memoize "0.5.6"]
                  [clj-time "0.7.0"]
-                 [cheshire "5.3.1"]]
+                 [cheshire "5.3.1"]
+                 [ring/ring-session-timeout "0.1.0"]]
   :plugins [[lein-immutant "2.0.0-SNAPSHOT"]]
   :repositories [["Immutant 2.x incremental builds"
                   "http://downloads.immutant.org/incremental/"]]
