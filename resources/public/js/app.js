@@ -23,7 +23,9 @@ window.onload = function() {
             return;
         }
 
-        socket = new WebSocket("ws://" + location.host);
+        var uri = "ws://" + location.host + location.pathname;
+        uri = uri.substring(0, uri.lastIndexOf('/'));
+        socket = new WebSocket(uri);
 
         socket.onerror = function(error) {
             output("error", error);
