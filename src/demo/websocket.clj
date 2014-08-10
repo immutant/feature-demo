@@ -14,11 +14,11 @@
    :on-message (fn [ch m]
                  (ws/send! ch (apply str (reverse m))))})
 
-(def app (-> (fn [_] (redirect "websocket.html"))
+(def app (-> (fn [r] (redirect (str (:context r) "/websocket.html")))
            ;;; Static resource middleware
            (wrap-resource "public")
            ;;; WebSocket middleware (must come last!)
            (ws/wrap-websocket callbacks)))
 
 (defn -main [& _]
-  (web/run app))
+  (web/run app :path "/ws"))
