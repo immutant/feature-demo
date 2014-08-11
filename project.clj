@@ -4,7 +4,8 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.immutant/immutant "2.x.incremental.212"]
+                 [org.immutant/immutant "2.x.incremental.214"]
+                 ;; [org.immutant/immutant "2.0.0-SNAPSHOT"]
                  [ring/ring-core "1.3.0"]
                  [ring/ring-devel "1.3.0"]
                  [org.clojure/core.memoize "0.5.6"]
