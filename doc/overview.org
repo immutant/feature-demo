@@ -12,7 +12,7 @@
 
 ** Tasks
 
-   - lein immutant deploy path-wildfly-install
+   - lein immutant war
 
 * Using outside of WildFly
 
@@ -21,10 +21,6 @@
 * Immutant API's
 
   Functions whose side effects invoke JBoss services
-
-  An alternative to Java interop, which we also expose
-
-  Our [[file:~/src/feature-demo][demonstration app]]
 
 ** immutant.web
 
@@ -43,6 +39,8 @@
    - singleton by default (runs on only one node in cluster)
    - not durable
 
+   examples: [[../src/demo/scheduling.clj][demo/scheduling.clj]]
+
 *** Parameters
 
     | :at     | java.util.Date, millis since epoch, or a military time string "HHmm" |
@@ -51,8 +49,6 @@
     | :repeat | # of repeats after initial firing; with :every                       |
     | :until  | java.util.Date, millis since epoch, or "HHmm"; with :every           |
     | :cron   | a Quartz cron spec, described below                                  |
-
-    Examples: [[../src/demo/scheduling.clj][demo/scheduling.clj]]
 
 *** cron specs
 
@@ -67,11 +63,24 @@
     | year    |       1970-2099 | optional |
 
 
-* immutant.messaging
 
-  - allows publishing and listening to queues/topics using HornetQ
-  - supports point-to-point, request-response messaging
+
+** immutant.messaging
+
+   - allows publishing and listening to queues/topics using HornetQ
+   - supports point-to-point, request-response messaging
+
+   examples: [[../src/demo/messaging.clj][demo/messaging.clj]]
 
 ** immutant.caching
 
-   COMING SOON
+   - Infinispan transactional data grid
+   - flexible clustering: replicated, invalidated, distributed
+   - strong consistency by default, but trades C for A when P
+   - eviction, expiration, persistence, conditional writes
+   - implements core.cache/CacheProtocol
+   - can be used with core.memoize/PluggableMemoization
+   - can be shared with ruby apps in an app server
+   - functional alternative: [[https://projectodd.ci.cloudbees.com/job/immutant2-incremental/lastSuccessfulBuild/artifact/target/apidocs/immutant.caching.html#var-compare-and-swap.21][immutant.caching/compare-and-swap!]]
+
+   examples: [[../src/demo/caching.clj][demo/caching.clj]]
