@@ -30,8 +30,9 @@
    - static resources served via [[http://ring-clojure.github.io/ring/ring.middleware.resource.html#var-wrap-resource][ring.middleware.resource/wrap-resource]]
    - :ring config, e.g. :handler, :init, :destroy,
      stacktraces?, :auto-reload?, :reload-paths
+   - simple websockets
 
-   examples: [[../src/demo/web.clj][demo/web.clj]]
+   examples: [[../src/demo/web.clj][demo/web.clj]] and [[../src/demo/websocket.clj][demo/websocket.clj]]
 
 ** immutant.scheduling
 
@@ -70,7 +71,7 @@
    - allows publishing and listening to queues/topics using HornetQ
    - supports point-to-point, request-response messaging
 
-   examples: [[../src/demo/messaging.clj][demo/messaging.clj]]
+   examples: [[../src/demo/messaging.clj][demo/messaging.clj]] and [[../src/demo/remote_messaging_client.clj][demo/remote_messaging_client.clj]]
 
 ** immutant.caching
 
