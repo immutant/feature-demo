@@ -1,8 +1,7 @@
 (ns demo.caching
   (:require [immutant.caching              :as c]
             [immutant.caching.core-memoize :as cmemo]
-            [immutant.scheduling           :as sch])
-  (:import java.util.concurrent.TimeUnit))
+            [immutant.scheduling           :as sch]))
 
 ;; Caches implement org.infinispan.Cache and
 ;; java.util.concurrent.ConcurrentMap
@@ -21,18 +20,13 @@
   (c/compare-and-swap! foo :a inc)                  ;=> 2
 
   ;; Internally, compare-and-swap! uses the ConcurrentMap methods,
-  ;; replace (CAS) and putIfAbsent, to provide a consistent view of
-  ;; the cache to callers. Of course, you can invoke these and other
-  ;; methods directly using plain ol' Java interop...
+  ;; replace, i.e. "compare and set", and putIfAbsent, to provide a
+  ;; consistent view of the cache to callers. Of course, you can
+  ;; invoke these and other methods directly using plain ol' Java
+  ;; interop...
 
   ;; Put an entry in the cache
   (.put foo :a 1)
-
-  ;; Override default time-to-live...
-  (.put foo :a 1, 1 TimeUnit/HOURS)
-  ;; ...and max idle time...
-  (.put foo :a 1, 1 TimeUnit/HOURS, 20 TimeUnit/MINUTES)
-  ;; ...also works for putIfAbsent, putAll, and replace
 
   ;; Add all the entries in the map to the cache
   (.putAll foo {:b 2, :c 3})
@@ -48,7 +42,6 @@
   ;; Replace for specific key and value (compare-and-set)
   (.replace foo :b 2 0)                 ;=> false
   (.replace foo :b 6 0)                 ;=> true
-  (:b foo)                              ;=> 0
   )
 
 (comment reading
@@ -91,6 +84,17 @@
   (.put baz :d 4)
   (:a baz)                              ;=> nil
 
+  ;; You can easily override the cache's expiration settings,
+  ;; time-to-live and/or max idle time, for all subsequent writes
+  (let [c (c/with-expiration baz
+            :ttl [1 :hour]
+            :idle [20 :minutes])]
+    (.put c :a 1)
+    (c/compare-and-swap! c :a dec)
+    (.putAll c {:b 2, :c 3})
+    (.putIfAbsent c :f 6)
+    (.replace c :f 5))
+
   ;; Removing a missing key is harmless
   (.remove baz :missing)                  ;=> nil
 
@@ -98,11 +102,12 @@
   (.remove baz :b)                        ;=> 2
 
   ;; If value is passed, both must match for remove to succeed
-  (.remove baz :a 2)                      ;=> false
-  (.remove baz :a 1)                      ;=> true
+  (.remove baz :c 2)                      ;=> false
+  (.remove baz :c 3)                      ;=> true
 
   ;; Clear all entries
-  (.clear baz))
+  (.clear baz)
+  )
 
 (comment encoding
   "Cache entries are not encoded by default, but may be decorated with
