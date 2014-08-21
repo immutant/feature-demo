@@ -1,9 +1,8 @@
 (ns demo.web
   (:require [immutant.web             :as web]
             [immutant.web.middleware  :as immutant]
-            [ring.middleware.session-timeout :refer [wrap-idle-session-timeout]]
-            [ring.util.response              :refer [response redirect]]
-            [clojure.pprint                  :refer (pprint)]))
+            [ring.util.response       :refer [response]]
+            [clojure.pprint           :refer (pprint)]))
 
 (defn echo-request
   "Echoes the request back as a string."
@@ -24,8 +23,7 @@
   (web/run echo-request)
 
   ;; Run counter in "development mode" using Immutant session middleware
-  (web/run-dmc (-> counter
-                 (wrap-idle-session-timeout
-                   {:timeout 20 :timeout-response (redirect "")})
-                 immutant/wrap-session)
+  (web/run-dmc
+    (-> counter
+      (immutant/wrap-session {:timeout 20}))
     :path "/counter"))
