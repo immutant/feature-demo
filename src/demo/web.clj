@@ -22,8 +22,7 @@
 
   (web/run echo-request)
 
-  ;; Run counter in "development mode" using Immutant session middleware
-  (web/run-dmc
+  (web/run
     (-> counter
       (immutant/wrap-session {:timeout 20}))
     :path "/counter"))
