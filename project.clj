@@ -4,15 +4,14 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.immutant/immutant "2.x.incremental.257"]
-                 ;; [org.immutant/immutant "2.0.0-SNAPSHOT"]
+                 [org.immutant/immutant "2.0.0-alpha1"]
                  [ring/ring-core "1.3.0"]
                  [ring/ring-devel "1.3.0"]
                  [org.clojure/core.memoize "0.5.6"]
                  [clj-time "0.7.0"]
                  [cheshire "5.3.1"]
                  [ring/ring-session-timeout "0.1.0"]]
-  :plugins [[lein-immutant "2.0.0-SNAPSHOT"]]
+  :plugins [[lein-immutant "2.0.0-alpha1"]]
   :repositories [["Immutant 2.x incremental builds"
                   "http://downloads.immutant.org/incremental/"]]
   :main demo.core
