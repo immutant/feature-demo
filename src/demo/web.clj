@@ -1,22 +1,17 @@
 (ns demo.web
   (:require [immutant.web             :as web]
+            [immutant.web.websocket   :as ws]
             [immutant.web.middleware  :as immutant]
-            [ring.util.response       :refer [response resource-response]]
-            [clojure.pprint           :refer (pprint)]
-            demo.websocket))
+            [compojure.route          :as route]
+            [compojure.core     :refer (ANY GET defroutes)]
+            [ring.util.response :refer (response redirect content-type)]
+            [clojure.pprint     :refer (pprint)]))
 
-(defn echo-request
-  "Echoes the request back as a string."
+(defn dump
+  "Dumps the request out as a string."
   [request]
-  (response (with-out-str (pprint request))))
-
-(defn wrap-index
-  "Returns index.html if :path-info is '/' or nil"
-  [f]
-  (fn [{:keys [path-info] :as request}]
-    (if (>= 1 (count path-info))
-      (resource-response "/public/index.html")
-      (f request))))
+  (-> (response (with-out-str (pprint request)))
+    (content-type "text/plain")))
 
 (defn counter [{session :session}]
   "From https://github.com/ring-clojure/ring/wiki/Sessions"
@@ -26,11 +21,23 @@
     (-> (response (str "You accessed this page " count " times\n"))
         (assoc :session session))))
 
+(def callbacks
+  "WebSocket callback functions"
+  {:on-open    (fn [channel handshake]
+                 (ws/send! channel "Ready to reverse your messages!"))
+   :on-close   (fn [channel {:keys [code reason]}]
+                 (println "close code:" code "reason:" reason))
+   :on-message (fn [ch m]
+                 (ws/send! ch (apply str (reverse m))))})
+
+(defroutes routes
+  (GET "/" {c :context} (redirect (str c "/index.html")))
+  (GET "/counter" [] counter)
+  (route/resources "/")
+  (ANY "*" [] dump))
+
 (defn -main [& args]
   (web/run
-    (-> echo-request wrap-index))
-  (web/run
-    (-> counter (immutant/wrap-session {:timeout 20}))
-    :path "/counter")
-
-  (apply demo.websocket/-main args))
+    (-> routes
+      (immutant/wrap-session {:timeout 20})
+      (ws/wrap-websocket callbacks))))
