@@ -1,6 +1,8 @@
 # Immutant feature demo
 
-An app showing trivial examples of all the Immutant libraries.
+An app showing trivial examples of all the Immutant libraries. Most
+log something to stdout, but the `demo.web` examples are available at
+`http://localhost:8080`.
 
 You can run the app in several ways:
 
@@ -21,7 +23,7 @@ You can fire up a repl and invoke each namespace directly
 
     $ lein repl
 
-Once at a prompt, try `(demo.core/-main)`
+Once at a prompt, try `(demo.web/-main)`
 
 ### jar
 
@@ -32,12 +34,15 @@ Create an uberjar and run it
 
 ### wildfly
 
+WildFly is installed by downloading and unpacking an archive. We'll
+just stick it in the project dir for now.
+
     $ wget http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip
     $ unzip wildfly-8.1.0.Final.zip
     $ lein immutant war -o wildfly-8.1.0.Final
     $ wildfly-8.1.0.Final/bin/standalone.sh -c standalone-full.xml
 
-Normally, you would unzip WildFly to a more "official" directory,
-say `/srv/wildfly`.
-
-Note the web examples will be deployed with a context path of `/demo`.
+Note the web examples will be deployed with a context path of `/demo`
+on WildFly so go to `http://localhost:8080/demo` to see the web
+examples. You can override this by renaming the war file beneath
+`wildfly-8.1.0.Final/standalone/deployments/` to `ROOT.war`.
