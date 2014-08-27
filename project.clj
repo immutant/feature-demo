@@ -16,4 +16,5 @@
                   "http://downloads.immutant.org/incremental/"]]
   :main demo.core
   :aliases {"msg-client" ["run" "-m" "demo.remote-messaging-client"]}
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}}
+  :min-lein-version "2.4.0")

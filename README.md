@@ -4,6 +4,8 @@ An app showing trivial examples of all the Immutant libraries. Most
 log something to stdout, but the `demo.web` examples are available at
 `http://localhost:8080`.
 
+The minimum supported Leiningen version is 2.4.0
+
 You can run the app in several ways:
 
 ### run
