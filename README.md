@@ -48,3 +48,41 @@ Note the web examples will be deployed with a context path of `/demo`
 on WildFly so go to `http://localhost:8080/demo` to see the web
 examples. You can override this by renaming the war file beneath
 `wildfly-8.1.0.Final/standalone/deployments/` to `ROOT.war`.
+
+#### clustering
+
+We'll simulate a cluster by "installing" another WildFly instance:
+
+    $ cp -R wildfly-8.1.0.Final wildfly-too
+    $ rm -rf wildfly-too/standalone/data/
+
+Because we already deployed the war file, it gets copied over, too.
+And to avoid spurious errors, we remove the `standalone/data`
+directory where WildFly keeps some runtime state.
+
+Now we'll start our first instance:
+
+    $ wildfly-8.1.0.Final/bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=one -Djboss.messaging.cluster.password=demo
+
+Note the following:
+
+* We use the `standalone-full-ha.xml` file in which clustering is
+  configured
+* Since both of our peers will be on the same host, we need to
+  give each node a unique name
+* The cluster requires a password
+
+In another shell, we fire up the second instance with similar options
+plus a system property to avoid port conflicts, since we're on the
+same host.
+
+    $ wildfly-too/bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=two -Djboss.messaging.cluster.password=demo -Djboss.socket.binding.port-offset=100
+
+You can correlate the output from both peers to the code beneath
+`src/demo` to observe HA singleton jobs, load-balanced messaging, and
+distributed caching. And you can observe session replication by
+reloading the following pages in your browser:
+
+* <http://localhost:8080/demo/counter>
+* <http://localhost:8180/demo/counter>
+

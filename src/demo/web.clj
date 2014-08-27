@@ -13,8 +13,9 @@
   (-> (response (with-out-str (pprint request)))
     (content-type "text/plain")))
 
-(defn counter [{session :session}]
+(defn counter
   "From https://github.com/ring-clojure/ring/wiki/Sessions"
+  [{session :session}]
   (let [count (:count session 0)
         session (assoc session :count (inc count))]
     (println "counter =>" count)
