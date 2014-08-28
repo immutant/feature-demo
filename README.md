@@ -4,7 +4,7 @@ An app showing trivial examples of all the Immutant libraries. Most
 log something to stdout, but the `demo.web` examples are available at
 `http://localhost:8080`.
 
-The minimum supported Leiningen version is 2.4.0
+You need at least Java 7 and Leiningen 2.4.0
 
 You can run the app in several ways:
 
@@ -95,8 +95,10 @@ reloading the following pages in your browser:
 
 ## On Heroku
 
-Pushing this repo to [Heroku](http://heroku.com) should be as simple
-as this:
+[Heroku](http://heroku.com) requires two extra files in the project
+root: a `Procfile` to bootstrap the app, and a `system.properties` to
+specify Java version 1.7. With those in place, we simply create the
+heroku repo and push:
 
     $ heroku create
     $ git push heroku thedeuce:master
@@ -105,6 +107,6 @@ To see the log output:
 
     $ heroku logs --tail
 
-And to bring up the app in your browser:
+And to open the app in the browser:
 
     $ heroku open
