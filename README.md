@@ -8,14 +8,14 @@ The minimum supported Leiningen version is 2.4.0
 
 You can run the app in several ways:
 
-* [lein run](#lein-run)
-* [at a repl](#at-a-repl)
-* [from a jar](#from-a-jar)
-* [in wildfly](#in-wildfly)
-    * [in a wildfly cluster](#in-a-wildfly-cluster)
+* [With lein run](#with-lein-run)
+* [At a repl](#at-a-repl)
+* [From a jar](#from-a-jar)
+* [In WildFly](#in-wildfly)
+    * [In a WildFly cluster](#in-a-wildfly-cluster)
+* [On Heroku](#on-heroku)
 
-
-## lein run
+## With lein run
 
 The value of `:main` in `project.clj` is `demo.core`, which runs
 `-main` for all of the demo namespaces.
@@ -26,7 +26,7 @@ You can use the -m option to run specific namespaces, e.g.
 
     $ lein run -m demo.web
 
-## at a repl
+## At a repl
 
 You can fire up a repl and invoke each namespace directly
 
@@ -34,17 +34,17 @@ You can fire up a repl and invoke each namespace directly
 
 Once at a prompt, try `(demo.web/-main)`
 
-## from a jar
+## From a jar
 
 Create an uberjar and run it
 
     $ lein uberjar
     $ java -jar target/demo-0.2.0-SNAPSHOT-standalone.jar 
 
-## in wildfly
+## In WildFly
 
-WildFly is installed by downloading and unpacking an archive. We'll
-just stick it in the project dir for now.
+[WildFly](http://wildfly.org) is installed by downloading and
+unpacking an archive. We'll just stick it in the project dir for now.
 
     $ wget http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip
     $ unzip wildfly-8.1.0.Final.zip
@@ -56,7 +56,7 @@ on WildFly so go to `http://localhost:8080/demo` to see the web
 examples. You can override this by renaming the war file beneath
 `wildfly-8.1.0.Final/standalone/deployments/` to `ROOT.war`.
 
-### in a wildfly cluster
+### In a WildFly cluster
 
 We'll simulate a cluster by "installing" another WildFly instance:
 
@@ -93,3 +93,18 @@ reloading the following pages in your browser:
 * <http://localhost:8080/demo/counter>
 * <http://localhost:8180/demo/counter>
 
+## On Heroku
+
+Pushing this repo to [Heroku](http://heroku.com) should be as simple
+as this:
+
+    $ heroku create
+    $ git push heroku thedeuce:master
+
+To see the log output:
+
+    $ heroku logs --tail
+
+And to bring up the app in your browser:
+
+    $ heroku open
