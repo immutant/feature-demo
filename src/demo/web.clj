@@ -37,8 +37,9 @@
   (route/resources "/")
   (ANY "*" [] dump))
 
-(defn -main [& args]
+(defn -main [& {:as args}]
   (web/run
     (-> routes
       (immutant/wrap-session {:timeout 20})
-      (ws/wrap-websocket callbacks))))
+      (ws/wrap-websocket callbacks))
+    args))

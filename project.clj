@@ -12,6 +12,7 @@
                  [clj-time "0.7.0"]
                  [cheshire "5.3.1"]]
   :plugins [[lein-immutant "2.0.0-alpha1"]]
+  :uberjar-name "demo-standalone.jar"
   :repositories [["Immutant 2.x incremental builds"
                   "http://downloads.immutant.org/incremental/"]]
   :main demo.core
