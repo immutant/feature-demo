@@ -55,7 +55,7 @@
   (get bar :x)                            ;=> nil
   (get bar :x 42)                         ;=> 42
 
-  ;; Symbols look up their value
+  ;; Keywords look up their value
   (:a bar)                                ;=> 1
   (:x bar 42)                             ;=> 42
 
@@ -114,20 +114,20 @@
   a codec. Provided codecs include :edn, :json, and :fressian. The
   latter two require additional dependencies: 'cheshire' and
   'org.clojure/data.fressian', respectively."
-
-  (def encoded (c/with-codec baz :edn))
+  (def ham (c/cache "ham"))
+  (def encoded (c/with-codec ham :edn))
 
   (.put encoded :a {:b 42})
   (:a encoded)                          ;=> {:b 42}
 
   ;; Access via non-encoded caches still possible
-  (get baz :a)                          ;=> nil
-  (get baz ":a")                        ;=> "{:b 42}"
+  (get ham :a)                          ;=> nil
+  (get ham ":a")                        ;=> "{:b 42}"
 
   ;; Infinispan caches don't allow null keys or values
   (try
-    (.put baz nil :a)               ;=> Null keys are not supported!
-    (.put baz :b nil)               ;=> Null values are not supported!
+    (.put ham nil :a)               ;=> Null keys are not supported!
+    (.put ham :b nil)               ;=> Null values are not supported!
     (catch NullPointerException _ "ERROR!"))
 
   ;; But nil keys and values are fine in an encoded cache
@@ -136,7 +136,7 @@
   (get encoded nil)                     ;=> :a
   (:b encoded)                          ;=> nil
   (contains? encoded :b)                ;=> true
-  (contains? baz "nil")                 ;=> true
+  (contains? ham "nil")                 ;=> true
   )
 
 (comment memoization
@@ -165,7 +165,6 @@
   (def c (c/cache "memo"))
   (get c [1 2 3])                         ;=> 42
   )
-
 
 (defn -main [& args]
   "Schedule a counter"

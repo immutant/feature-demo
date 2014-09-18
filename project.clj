@@ -5,6 +5,13 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.immutant/immutant "2.0.0-alpha1"]
+
+                 ;; or bring the artifacts in piecemeal:
+                 ;; [org.immutant/caching "2.0.0-alpha1"]
+                 ;; [org.immutant/messaging "2.0.0-alpha1"]
+                 ;; [org.immutant/scheduling "2.0.0-alpha1"]
+                 ;; [org.immutant/web "2.0.0-alpha1"]
+
                  [compojure "1.1.8"]
                  [ring/ring-core "1.3.0"]
                  [ring/ring-devel "1.3.0"]
@@ -12,10 +19,8 @@
                  [clj-time "0.7.0"]
                  [cheshire "5.3.1"]]
   :plugins [[lein-immutant "2.0.0-alpha1"]]
-  :uberjar-name "demo-standalone.jar"
-  :repositories [["Immutant 2.x incremental builds"
-                  "http://downloads.immutant.org/incremental/"]]
   :main demo.core
-  :aliases {"msg-client" ["run" "-m" "demo.remote-messaging-client"]}
-  :profiles {:uberjar {:aot :all}}
-  :min-lein-version "2.4.0")
+  :uberjar-name "demo-standalone.jar"
+  :profiles {:uberjar {:aot [demo.core]}}
+  :min-lein-version "2.4.0"
+  :aliases {"msg-client" ["run" "-m" "demo.remote-messaging-client"]})

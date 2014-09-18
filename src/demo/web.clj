@@ -1,14 +1,14 @@
 (ns demo.web
   (:require [immutant.web             :as web]
             [immutant.web.websocket   :as ws]
-            [immutant.web.middleware  :as immutant]
+            [immutant.web.middleware  :as web-middleware]
             [compojure.route          :as route]
             [compojure.core     :refer (ANY GET defroutes)]
             [ring.util.response :refer (response redirect content-type)]
             [clojure.pprint     :refer (pprint)]))
 
-(defn dump
-  "Dumps the request out as a string."
+(defn echo
+  "Echos the request back as a string."
   [request]
   (-> (response (with-out-str (pprint request)))
     (content-type "text/plain")))
@@ -22,7 +22,7 @@
     (-> (response (str "You accessed this page " count " times\n"))
         (assoc :session session))))
 
-(def callbacks
+(def websocket-callbacks
   "WebSocket callback functions"
   {:on-open    (fn [channel handshake]
                  (ws/send! channel "Ready to reverse your messages!"))
@@ -35,11 +35,13 @@
   (GET "/" {c :context} (redirect (str c "/index.html")))
   (GET "/counter" [] counter)
   (route/resources "/")
-  (ANY "*" [] dump))
+  (ANY "*" [] echo))
 
 (defn -main [& {:as args}]
   (web/run
     (-> routes
-      (immutant/wrap-session {:timeout 20})
-      (ws/wrap-websocket callbacks))
+      (web-middleware/wrap-session {:timeout 20})
+      ;; wrap the handler with websocket support
+      ;; websocket requests will go to the callbacks, ring requests to the handler
+      (ws/wrap-websocket websocket-callbacks))
     args))
