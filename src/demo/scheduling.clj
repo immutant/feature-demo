@@ -44,9 +44,10 @@
 
 (comment
 
-  ;; scheduling a simple job
+  ;; scheduling a simple job, using bound-fn to capture *out* for the repl
   (def every-2-job
-    (sch/schedule #(println "called")
+    (sch/schedule (bound-fn []
+                    (println "called"))
       (sch/every 2 :seconds)))
 
   ;; the return value of the schedule call can be used to stop it
