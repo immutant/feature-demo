@@ -5,18 +5,14 @@
 
 (defn -main
   "Connects to a 'remote' HornetQ running on localhost:5445 and delivers
-  the message to the given destination. The destination name must be
-  prefixed with the type (either 'queue' or 'topic') and a colon. The
-  rest of the arguments are considered the message. Example:
+  the message to the given destination. The first argument is the queue
+  name, the rest of the arguments are considered the message. Example:
 
-    lein msg-client queue:foo hi there friends"
-  [dest-type:name & message]
+    lein msg-client foo hi there friends"
+  [queue-name & message]
   (with-open [connection (msg/connection :host "localhost" :port 5445)]
-    (let [[dest-type dest-name] (str/split dest-type:name #":")
-          dest-fn (if (= dest-type "queue")
-                         msg/queue msg/topic)
-          destination (dest-fn dest-name :connection connection)
+    (let [queue (msg/queue queue-name :connection connection)
           message (str/join " " message)]
-      (println (format "Sending '%s' to %s %s"
-                 message dest-type dest-name))
-      (msg/publish destination message))))
+      (println (format "Sending '%s' to queue %s"
+                 message queue-name))
+      (msg/publish queue message))))
