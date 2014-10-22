@@ -10,8 +10,8 @@
 
     lein msg-client foo hi there friends"
   [queue-name & message]
-  (with-open [connection (msg/connection :host "localhost" :port 5445)]
-    (let [queue (msg/queue queue-name :connection connection)
+  (with-open [context (msg/context :host "localhost" :port 5445)]
+    (let [queue (msg/queue queue-name :context context)
           message (str/join " " message)]
       (println (format "Sending '%s' to queue %s"
                  message queue-name))
