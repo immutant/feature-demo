@@ -82,6 +82,6 @@
    - implements core.cache/CacheProtocol
    - can be used with core.memoize/PluggableMemoization
    - can be shared with ruby apps in an app server
-   - functional alternative: [[https://projectodd.ci.cloudbees.com/job/immutant2-incremental/lastSuccessfulBuild/artifact/target/apidocs/immutant.caching.html#var-compare-and-swap.21][immutant.caching/compare-and-swap!]]
+   - functional alternative: [[https://projectodd.ci.cloudbees.com/job/immutant2-incremental/lastSuccessfulBuild/artifact/target/apidocs/immutant.caching.html#var-swap-in.21][immutant.caching/swap-in!]]
 
    examples: [[../src/demo/caching.clj][demo/caching.clj]]

@@ -11,15 +11,15 @@
 
   (def foo (c/cache "foo"))
 
-  ;; The compare-and-swap! function atomically updates cache entries
+  ;; The swap-in! function atomically updates cache entries
   ;; by applying a function to the current value or nil, if the key is
   ;; missing. The function should be side-effect free.
 
-  (c/compare-and-swap! foo :a (fnil inc 0))         ;=> 1
-  (c/compare-and-swap! foo :b (constantly "foo"))   ;=> "foo"
-  (c/compare-and-swap! foo :a inc)                  ;=> 2
+  (c/swap-in! foo :a (fnil inc 0))         ;=> 1
+  (c/swap-in! foo :b (constantly "foo"))   ;=> "foo"
+  (c/swap-in! foo :a inc)                  ;=> 2
 
-  ;; Internally, compare-and-swap! uses the ConcurrentMap methods,
+  ;; Internally, swap-in! uses the ConcurrentMap methods,
   ;; replace, i.e. "compare and set", and putIfAbsent, to provide a
   ;; consistent view of the cache to callers. Of course, you can
   ;; invoke these and other methods directly using plain ol' Java
@@ -90,7 +90,7 @@
             :ttl [1 :hour]
             :idle [20 :minutes])]
     (.put c :a 1)
-    (c/compare-and-swap! c :a dec)
+    (c/swap-in! c :a dec)
     (.putAll c {:b 2, :c 3})
     (.putIfAbsent c :f 6)
     (.replace c :f 5))
@@ -170,7 +170,7 @@
   "Schedule a counter"
   (let [c (c/cache "counter")
         f #(println "Updating count to"
-             (c/compare-and-swap! c :count (fnil inc 0)))]
+             (c/swap-in! c :count (fnil inc 0)))]
     (sch/schedule f
       :id "counter"
       :every [10 :seconds]

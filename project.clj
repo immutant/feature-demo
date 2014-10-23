@@ -4,13 +4,13 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.immutant/immutant "2.x.incremental.353"]
+                 [org.immutant/immutant "2.0.0-alpha2"]
 
                  ;; or bring the artifacts in piecemeal:
-                 ;; [org.immutant/caching "2.x.incremental.353"]
-                 ;; [org.immutant/messaging "2.x.incremental.353"]
-                 ;; [org.immutant/scheduling "2.x.incremental.353"]
-                 ;; [org.immutant/web "2.x.incremental.353"]
+                 ;; [org.immutant/caching "2.0.0-alpha2"]
+                 ;; [org.immutant/messaging "2.0.0-alpha2"]
+                 ;; [org.immutant/scheduling "2.0.0-alpha2"]
+                 ;; [org.immutant/web "2.0.0-alpha2"]
 
                  [compojure "1.1.8"]
                  [ring/ring-core "1.3.0"]
