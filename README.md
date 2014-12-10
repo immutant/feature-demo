@@ -46,21 +46,21 @@ Create an uberjar and run it
 [WildFly](http://wildfly.org) is installed by downloading and
 unpacking an archive. We'll just stick it in the project dir for now.
 
-    $ wget http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip
-    $ unzip wildfly-8.1.0.Final.zip
-    $ lein immutant war -o wildfly-8.1.0.Final
-    $ wildfly-8.1.0.Final/bin/standalone.sh -c standalone-full.xml
+    $ wget http://download.jboss.org/wildfly/8.2.0.Final/wildfly-8.2.0.Final.zip
+    $ unzip wildfly-8.2.0.Final.zip
+    $ lein immutant war -o wildfly-8.2.0.Final
+    $ wildfly-8.2.0.Final/bin/standalone.sh -c standalone-full.xml
 
 Note the web examples will be deployed with a context path of `/demo`
 on WildFly so go to `http://localhost:8080/demo` to see the web
 examples. You can override this by renaming the war file beneath
-`wildfly-8.1.0.Final/standalone/deployments/` to `ROOT.war`.
+`wildfly-8.2.0.Final/standalone/deployments/` to `ROOT.war`.
 
 ### In a WildFly cluster
 
 We'll simulate a cluster by "installing" another WildFly instance:
 
-    $ cp -R wildfly-8.1.0.Final wildfly-too
+    $ cp -R wildfly-8.2.0.Final wildfly-too
     $ rm -rf wildfly-too/standalone/data/
 
 Because we already deployed the war file, it gets copied over, too.
@@ -69,7 +69,7 @@ directory where WildFly keeps some runtime state.
 
 Now we'll start our first instance:
 
-    $ wildfly-8.1.0.Final/bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=one -Djboss.messaging.cluster.password=demo
+    $ wildfly-8.2.0.Final/bin/standalone.sh -c standalone-full-ha.xml -Djboss.node.name=one -Djboss.messaging.cluster.password=demo
 
 Note the following:
 
