@@ -12,5 +12,4 @@ pom.xml.asc
 .lein-plugins
 .lein-repl-history
 /.nrepl-port
-wildfly-8.1.0.Final*
-wildfly-8.2.0.Final*
+wildfly-*
