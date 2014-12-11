@@ -2,7 +2,7 @@
 
 An app showing trivial examples of all the Immutant libraries. Most
 log something to stdout, but the `demo.web` examples are available at
-`http://localhost:8080`.
+<http://localhost:8080/>.
 
 You need at least Java 7 and Leiningen 2.4.0
 
@@ -45,9 +45,9 @@ Create an uberjar and run it
 
 [WildFly](http://wildfly.org) is installed by downloading and
 unpacking an archive. For our purposes, we'll drop it in the project
-directory:
+directory. For a list of available versions, see
+<http://wildfly.org/downloads/>
 
-    # For a list of available versions, see http://wildfly.org/downloads/
     VERSION=8.2.0.Final
 
     # Install WildFly
@@ -61,9 +61,9 @@ directory:
     wildfly-$VERSION/bin/standalone.sh -c standalone-full.xml
 
 Note the web examples will be deployed with a context path of `/demo`
-on WildFly so go to `http://localhost:8080/demo/` to see the web
+on WildFly so go to <http://localhost:8080/demo/> to see the web
 examples. Alternatively, to mount the app at the root context,
-`http://localhost:8080/`, rename the war file beneath
+<http://localhost:8080/>, rename the war file beneath
 `wildfly-$VERSION/standalone/deployments/` to `ROOT.war`.
 
 ### In a WildFly cluster
