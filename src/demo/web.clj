@@ -1,53 +1,49 @@
 (ns demo.web
-  (:use [clojure.pprint :only [pprint]])
   (:require [immutant.web             :as web]
-            [immutant.web.session     :as immutant-session]
-            [immutant.util            :as util]
-            [ring.middleware.session  :as ring-session]
-            [ring.middleware.resource :as ring-resource]
-            [ring.util.response       :as ring-util]))
+            [immutant.web.websocket   :as ws]
+            [immutant.web.middleware  :as web-middleware]
+            [compojure.route          :as route]
+            [compojure.core     :refer (ANY GET defroutes)]
+            [ring.util.response :refer (response redirect content-type)]
+            [clojure.pprint     :refer (pprint)]
+            [environ.core       :refer (env)]))
 
-(defn request-dumper
-  "A very simple ring handler"
+(defn echo
+  "Echos the request back as a string."
   [request]
-  {:status 200
-   :headers {"Content-Type" "text/plain"}
-   :body (with-out-str (pprint request))})
-;;; Mount the handler relative to the app's context path [/demo]
-(web/start request-dumper)
+  (-> (response (with-out-str (pprint request)))
+    (content-type "text/plain")))
 
-
-(defn world-greeter
-  "An even simpler ring handler"
-  [request]
-  {:status 200
-   :headers {"Content-Type" "text/html"}
-   :body "<h1>Hello World</h1>"})
-;;; Mount it at a "sub context path" [/demo/hello]
-(web/start "/hello" world-greeter)
-
-
-;;; Lifted from https://github.com/ring-clojure/ring/wiki/Sessions
-(defn counter [{session :session}]
+(defn counter
+  "From https://github.com/ring-clojure/ring/wiki/Sessions"
+  [{session :session}]
   (let [count (:count session 0)
         session (assoc session :count (inc count))]
-    (-> (ring-util/response (str "You accessed this page " count " times\n"))
-        (assoc :session session))))
-;;; Use Immutant's session store for automatic replication
-(web/start "/counter"
- (ring-session/wrap-session
-  #'counter
-  {:store (immutant-session/servlet-store)}))
+    (println "counter =>" count)
+    (-> (response (str "You accessed this page " count " times\n"))
+      (assoc :session session))))
 
+(def websocket-callbacks
+  "WebSocket callback functions"
+  {:on-open    (fn [channel handshake]
+                 (ws/send! channel "Ready to reverse your messages!"))
+   :on-close   (fn [channel {:keys [code reason]}]
+                 (println "close code:" code "reason:" reason))
+   :on-message (fn [ch m]
+                 (ws/send! ch (apply str (reverse m))))})
 
-;;; Static resource middleware
-;;; See https://github.com/ring-clojure/ring/wiki/Static-Resources
-(web/start (ring-resource/wrap-resource #'request-dumper "public"))
+(defroutes routes
+  (GET "/" {c :context} (redirect (str c "/index.html")))
+  (GET "/counter" [] counter)
+  (route/resources "/")
+  (ANY "*" [] echo))
 
-
-;;; Handy utilities
-(util/in-immutant?)
-(util/app-relative "src")
-(util/http-port)
-(util/context-path)
-(util/app-uri)
+(defn -main [& {:as args}]
+  (web/run
+    (-> routes
+      (web-middleware/wrap-session {:timeout 20})
+      ;; wrap the handler with websocket support
+      ;; websocket requests will go to the callbacks, ring requests to the handler
+      (ws/wrap-websocket websocket-callbacks))
+    (merge {"host" (env :host), "port" (env :port)}
+      args)))

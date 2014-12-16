@@ -1,36 +1,37 @@
 (ns demo.messaging
   (:require [immutant.messaging :as msg]))
 
-;;; create queue, if not already
-(def q "queue")
-(msg/start q :durable false)
+(defn listener
+  "A simple message listener"
+  [m]
+  (println "listener received" (pr-str m)))
 
-;;; publish some messages
-(msg/publish q :ping)
-(msg/publish q {:a 1, :b [1 2 3]})
-(msg/publish q 42, :priority :high, :ttl 30000)
+(defn -main [& _]
 
-;;; consume them
-(let [messages (msg/message-seq q)]
-  (if (= 42 (msg/receive q, :timeout 1000))
-    (doall (take 2 messages))))
+  ;; msg/queue creates a queue in HornetQ if it does not already exist
+  ;; returns a reference to the queue
+  (msg/queue "my-queue")
 
-;;; filter them
-(def results (atom []))
-(msg/listen q #(swap! results conj (:time %)), :selector "type='date'")
-(msg/publish q {:time "now"}, :properties {:type "date"})
-(msg/publish q (with-meta {:time (java.util.Date.)} {:type "date"}))
-@results
+  ;; registers a fn to be called each time a message comes in
+  (msg/listen (msg/queue "my-queue") listener)
 
-;;; create topic
-(def t "topic")
-(msg/start t)
+  ;; sends 10 messages to the queue
+  (dotimes [n 10]
+    (msg/publish (msg/queue "my-queue") {:message n}))
 
-;;; durable topic subscriber
-(msg/receive t, :client-id "jim", :timeout 1)
-(msg/publish t "just call my name, i'll be there")
-(msg/receive t, :client-id "jim")
+  ;; default encoding is :edn. Other options are: :edn, :fressian, :json, :none
+  ;; :json requires cheshire, :fressian requires data.fressian
+  (msg/publish (msg/queue "my-queue") {:message :hi} :encoding :json)
 
-;;; request/response
-(msg/respond q (partial apply +), :selector "op='sum'")
-@(msg/request q (with-meta [1 2 16 23] {:op "sum"}))
+  ;; using synchronous messaging (request/respond)
+  (msg/queue "sync-queue")
+
+  ;; registers a fn as a responder - a listener who's return value
+  ;; is sent to the requester
+  (msg/respond (msg/queue "sync-queue") inc)
+
+  (dotimes [n 5]
+    ;; request returns a j.u.c.Future
+    (println "response is:"
+      @(msg/request (msg/queue "sync-queue") n)))
+  )
