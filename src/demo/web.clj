@@ -5,7 +5,8 @@
             [compojure.route          :as route]
             [compojure.core     :refer (ANY GET defroutes)]
             [ring.util.response :refer (response redirect content-type)]
-            [clojure.pprint     :refer (pprint)]))
+            [clojure.pprint     :refer (pprint)]
+            [environ.core       :refer (env)]))
 
 (defn echo
   "Echos the request back as a string."
@@ -44,4 +45,5 @@
       ;; wrap the handler with websocket support
       ;; websocket requests will go to the callbacks, ring requests to the handler
       (ws/wrap-websocket websocket-callbacks))
-    args))
+    (merge {"host" (env :host), "port" (env :port)}
+      args)))
