@@ -126,18 +126,19 @@ And to open the app in the browser:
 
 The app includes `start` and `stop` *action hooks* beneath the
 `.openshift` directory that enable it to be deployed on
-[OpenShift](http://openshift.com) using their
+[OpenShift](http://openshift.com) using the
 [DIY](https://developers.openshift.com/en/diy-overview.html)
 cartridge.
 
 After installing the
 [client tools](https://developers.openshift.com/en/getting-started-client-tools.html),
-create an application like so:
+create an application named `demo` like so:
 
     rhc app-create demo diy --from-code https://github.com/immutant/feature-demo
 
 To see the log output:
 
+    cd demo
     rhc tail
 
 Once the app is up, visit
