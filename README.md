@@ -14,6 +14,7 @@ You can run the app in several ways:
 * [In WildFly](#in-wildfly)
     * [In a WildFly cluster](#in-a-wildfly-cluster)
 * [On Heroku](#on-heroku)
+* [On OpenShift](#on-openshift)
 
 ## With lein run
 
@@ -120,3 +121,26 @@ To see the log output:
 And to open the app in the browser:
 
     heroku open
+
+## On OpenShift
+
+The app includes `start` and `stop` *action hooks* beneath the
+`.openshift` directory that enable it to be deployed on
+[OpenShift](http://openshift.com) using their
+[DIY](https://developers.openshift.com/en/diy-overview.html)
+cartridge.
+
+After installing the
+[client tools](https://developers.openshift.com/en/getting-started-client-tools.html),
+create an application like so:
+
+    rhc app-create demo diy --from-code https://github.com/immutant/feature-demo
+
+To see the log output:
+
+    rhc tail
+
+Once the app is up, visit
+`http://demo-<YOUR_DOMAIN>.rhcloud.com:8000/`. The port, 8000, is
+optional for all but the WebSocket example, because OpenShift only
+supports WebSockets on port 8000.
