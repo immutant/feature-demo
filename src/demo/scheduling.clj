@@ -80,9 +80,9 @@
 
     ;; singleton jobs require an id
     (sch/schedule #(println "I run on ONE node")
-      (-> every-5s
+      (-> (sch/every 10 :seconds)
         (sch/id :a_singleton)))
 
     (sch/schedule #(println "I run on EVERY node")
-      (-> every-5s
+      (-> (sch/every 9 :seconds)
         (sch/singleton false)))))

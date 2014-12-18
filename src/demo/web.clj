@@ -45,5 +45,5 @@
       ;; wrap the handler with websocket support
       ;; websocket requests will go to the callbacks, ring requests to the handler
       (ws/wrap-websocket websocket-callbacks))
-    (merge {"host" (env :host), "port" (env :port)}
+    (merge {"host" (env :demo-web-host), "port" (env :demo-web-port)}
       args)))

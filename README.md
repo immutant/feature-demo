@@ -125,14 +125,11 @@ And to open the app in the browser:
 ## On OpenShift
 
 The app includes `start` and `stop` *action hooks* beneath the
-`.openshift` directory that enable it to be deployed on
+`.openshift/` directory that enable it to be deployed on
 [OpenShift](http://openshift.com) using the
-[DIY](https://developers.openshift.com/en/diy-overview.html)
-cartridge.
+[DIY cartridge](https://developers.openshift.com/en/diy-overview.html).
 
-After installing the
-[client tools](https://developers.openshift.com/en/getting-started-client-tools.html),
-create an application named `demo` like so:
+We'll call our application `demo`:
 
     rhc app-create demo diy --from-code https://github.com/immutant/feature-demo
 
@@ -145,3 +142,39 @@ Once the app is up, visit
 `http://demo-<YOUR_DOMAIN>.rhcloud.com:8000/`. The port, 8000, is
 optional for all but the WebSocket example, because OpenShift only
 supports WebSockets on port 8000.
+
+### In a WildFly cluster on OpenShift
+
+We'll use the
+[WildFly cartridge](https://developers.openshift.com/en/wildfly-overview.html)
+to create a
+[scaled application](https://developers.openshift.com/en/overview-platform-features.html#scaling)
+named `wf`. The `pre_deploy_wildfly` action hook will create our war
+file in a directory monitored by the app server.
+
+    rhc app-create wf wildfly --scaling --gear-size medium --from-code https://github.com/immutant/feature-demo
+
+Note we set the `--scaling` option and a medium `--gear-size`. It will
+take a few minutes for the command to complete. Once it does, monitor
+the log output:
+
+    cd wf
+    rhc tail
+
+View the web examples at `http://wf-<YOUR_DOMAIN>.rhcloud.com:8000/`
+
+Try scaling the app up to 3 gears:
+
+    rhc cartridge-scale wildfly 3
+
+View the gears for your app to obtain their ssh URL's:
+
+    rhc app-show --gears
+
+Login to your gear[s] to monitor/control it:
+
+    rhc ssh
+    help
+    gear restart
+    tail_all
+
