@@ -1,0 +1,14 @@
+#!/bin/bash
+export LEIN_HOME="${OPENSHIFT_DATA_DIR}/.lein"
+export LEIN_JVM_OPTS="-Duser.home=${LEIN_HOME}"
+export JVM_OPTS="-Dport=${OPENSHIFT_DIY_PORT} -Dhost=${OPENSHIFT_DIY_IP} -Dhornetq.netty.port=15000 -Dhornetq.netty.host=${OPENSHIFT_DIY_IP}"
+
+if [ ! -d ${LEIN_HOME} ]; then
+    echo "Installing Leiningen"
+    cd ${OPENSHIFT_DATA_DIR}
+    wget https://raw.github.com/technomancy/leiningen/stable/bin/lein
+    if [ -f lein ]; then
+        chmod +x lein
+        mkdir -p $LEIN_HOME
+    fi
+fi
