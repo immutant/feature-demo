@@ -107,13 +107,16 @@ reloading the following pages in your browser:
 
 ## On Heroku
 
-[Heroku](http://heroku.com) requires two extra files in the project
-root: a `Procfile` to bootstrap the app, and a `system.properties` to
-specify Java version 1.7. With those in place, we simply create the
-heroku repo and push:
+Press this button:
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+Or do it manually. [Heroku](http://heroku.com) requires a `Procfile` in the project 
+root to bootstrap the app. With this in place, we simply create the heroku repo 
+and push:
 
     heroku create
-    git push heroku thedeuce:master
+    git push heroku master
 
 To see the log output:
 
@@ -178,4 +181,3 @@ Login to a gear to monitor/control it:
     help
     gear restart
     tail_all
-
