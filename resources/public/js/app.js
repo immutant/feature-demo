@@ -42,6 +42,7 @@ window.onload = function() {
 
         socket.onclose = function(event) {
             output("closed", "Disconnected: " + event.code + " " + event.reason);
+            socket = undefined;
         };
     };
 
@@ -63,7 +64,6 @@ window.onload = function() {
             return;
         }
         socket.close(1000, "Close button clicked");
-        socket = undefined;
     };
 
 };
