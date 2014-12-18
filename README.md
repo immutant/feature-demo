@@ -12,9 +12,10 @@ You can run the app in several ways:
 * [At a repl](#at-a-repl)
 * [From a jar](#from-a-jar)
 * [In WildFly](#in-wildfly)
-    * [In a WildFly cluster](#in-a-wildfly-cluster)
+    * [In a cluster](#in-a-wildfly-cluster)
 * [On Heroku](#on-heroku)
 * [On OpenShift](#on-openshift)
+    * [In a WildFly cluster](#in-a-wildfly-cluster-on-openshift)
 
 ## With lein run
 
@@ -145,7 +146,7 @@ supports WebSockets on port 8000.
 
 ### In a WildFly cluster on OpenShift
 
-We'll use the
+We can use the
 [WildFly cartridge](https://developers.openshift.com/en/wildfly-overview.html)
 to create a
 [scaled application](https://developers.openshift.com/en/overview-platform-features.html#scaling)
@@ -163,15 +164,15 @@ the log output:
 
 View the web examples at `http://wf-<YOUR_DOMAIN>.rhcloud.com:8000/`
 
-Try scaling the app up to 3 gears:
+Try scaling the app up to 2 gears:
 
-    rhc cartridge-scale wildfly 3
+    rhc cartridge-scale wildfly 2
 
 View the gears for your app to obtain their ssh URL's:
 
     rhc app-show --gears
 
-Login to your gear[s] to monitor/control it:
+Login to a gear to monitor/control it:
 
     rhc ssh
     help
