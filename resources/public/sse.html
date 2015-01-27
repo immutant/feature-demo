@@ -1,0 +1,29 @@
+<html>
+  <body>
+    <script>
+      function setupEventSource() {
+        var output = document.getElementById("output");
+        if (typeof(EventSource) !== "undefined") {
+          var source = new EventSource("sse");
+          source.onmessage = function(event) {
+            output.innerHTML += event.data + "<br>";
+          };
+          source.addEventListener('close', function(event) {
+            output.innerHTML += event.data + "<hr/>";
+            source.close();
+            }, false);
+        } else {
+          output.innerHTML = "Sorry, Server-Sent Events are not supported in your browser";
+        }
+        return false;
+      }
+    </script>
+
+    <h2>Server-Sent Events</h2>
+    <div>
+      <input type="button" id="sendID" value="Start" onclick="setupEventSource()"/>
+    </div>
+    <hr/> 
+    <div id="output"></div>
+  </body> 
+</html>

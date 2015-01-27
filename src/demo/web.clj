@@ -1,7 +1,8 @@
 (ns demo.web
   (:require [immutant.web             :as web]
             [immutant.web.async       :as async]
-            [immutant.web.middleware  :as web-middleware]
+            [immutant.web.sse         :as sse]
+            [immutant.web.middleware  :as immutant]
             [compojure.route          :as route]
             [compojure.core     :refer (ANY GET defroutes)]
             [ring.util.response :refer (response redirect content-type)]
@@ -23,6 +24,29 @@
     (-> (response (str "You accessed this page " count " times\n"))
       (assoc :session session))))
 
+(defn sse-countdown
+  [request]
+  (sse/as-sse-channel request
+    {:on-open (fn [ch]
+                (doseq [x (range 5 0 -1)]
+                  (sse/send! ch x)
+                  (Thread/sleep 500))
+                ;; Signal the client to call EventSource.close()
+                (sse/send! ch {:event "close", :data "bye!"})
+                ;; The above won't actually close the channel, so we
+                ;; introduce a race condition by explicitly closing it
+                ;; below. If the channel closes before the EventSource
+                ;; closes, it'll reconnect and we do it all over again!
+                (.close ch))
+     :on-close (fn [& _] (println "SSE channel closed"))}))
+
+(defroutes routes
+  (GET "/" {c :context} (redirect (str c "/index.html")))
+  (GET "/counter" [] counter)
+  (GET "/sse" [] sse-countdown)
+  (route/resources "/")
+  (ANY "*" [] echo))
+
 (def websocket-callbacks
   "WebSocket callback functions"
   {:on-open    (fn [channel]
@@ -32,19 +56,10 @@
    :on-message (fn [ch m]
                  (async/send! ch (apply str (reverse m))))})
 
-(defroutes routes
-  (GET "/" {c :context :as request}
-    (if (:websocket? request)
-      (async/as-channel request
-        websocket-callbacks)
-      (redirect (str c "/index.html"))))
-  (GET "/counter" [] counter)
-  (route/resources "/")
-  (ANY "*" [] echo))
-
 (defn -main [& {:as args}]
   (web/run
     (-> routes
-      (web-middleware/wrap-session {:timeout 20}))
+      (immutant/wrap-session {:timeout 20})
+      (immutant/wrap-websocket websocket-callbacks))
     (merge {"host" (env :demo-web-host), "port" (env :demo-web-port)}
       args)))
