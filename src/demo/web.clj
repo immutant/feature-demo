@@ -26,19 +26,13 @@
 
 (defn sse-countdown
   [request]
-  (sse/as-sse-channel request
+  (sse/as-channel request
     {:on-open (fn [ch]
                 (doseq [x (range 5 0 -1)]
                   (sse/send! ch x)
                   (Thread/sleep 500))
                 ;; Signal the client to call EventSource.close()
-                (sse/send! ch {:event "close", :data "bye!"})
-                ;; The above won't actually close the channel, so we
-                ;; introduce a race condition by explicitly closing it
-                ;; below. If the channel closes before the EventSource
-                ;; closes, it'll reconnect and we do it all over again!
-                (.close ch))
-     :on-close (fn [& _] (println "SSE channel closed"))}))
+                (sse/send! ch {:event "close", :data "bye!"}))}))
 
 (defroutes routes
   (GET "/" {c :context} (redirect (str c "/index.html")))
