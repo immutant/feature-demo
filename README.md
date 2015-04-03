@@ -41,7 +41,7 @@ Once at a prompt, try `(demo.web/-main)`
 Create an uberjar and run it
 
     lein uberjar
-    java -jar target/demo-0.2.0-SNAPSHOT-standalone.jar 
+    java -jar target/demo-standalone.jar
 
 ## In WildFly
 
