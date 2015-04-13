@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.immutant/immutant "2.x.incremental.543"]
+                 [org.immutant/immutant "2.x.incremental.561"]
                  [compojure "1.3.1"]
                  [ring/ring-devel "1.3.1"]
                  [org.clojure/core.memoize "0.5.6"]
@@ -20,4 +20,7 @@
   :uberjar-name "demo-standalone.jar"
   :profiles {:uberjar {:aot [demo.core]}}
   :min-lein-version "2.4.0"
+  :jvm-opts ["-Dhornetq.data.dir=target/hornetq-data"
+             "-DObjectStoreEnvironmentBean.objectStoreDir=target/ObjectStore"
+             "-Dcom.arjuna.ats.arjuna.objectstore.objectStoreDir=target/ObjectStore"]
   :aliases {"msg-client" ["run" "-m" "demo.remote-messaging-client"]})
