@@ -21,6 +21,5 @@
   :profiles {:uberjar {:aot [demo.core]}}
   :min-lein-version "2.4.0"
   :jvm-opts ["-Dhornetq.data.dir=target/hornetq-data"
-             "-DObjectStoreEnvironmentBean.objectStoreDir=target/ObjectStore"
              "-Dcom.arjuna.ats.arjuna.objectstore.objectStoreDir=target/ObjectStore"]
   :aliases {"msg-client" ["run" "-m" "demo.remote-messaging-client"]})
