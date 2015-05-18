@@ -1,87 +1,84 @@
+#+STARTUP: inlineimages
+
+* Immutant
 [[file:images/immutant_logo.jpg]]
 
 * What is Immutant?
 
-  A collection of libraries that can be embedded within any Clojure
-  application. Optionally, the application can be deployed to a stock
-  [[http://wildfly.org][WildFly]] application server.
+  A curated collection of libraries that can be embedded within any
+  Clojure application. Optionally, the application can be deployed to
+  a stock [[http://wildfly.org][WildFly]] application server.
 
-* The [[https://github.com/immutant/lein-immutant/tree/2x-dev][lein-immutant]] plugin
+  - web
+  - messaging
+  - cache
+  - transactions
+  - scheduling
 
-  Only required if deploying your app to WildFly.
+* Using inside Wildfly
 
-** Tasks
+  - Use the [[https://github.com/immutant/lein-immutant/tree/2x-dev][lein-immutant]] plugin to create a war
 
-   - lein immutant war
+  ~lein immutant war~
 
 * Using outside of WildFly
 
-  Set a =:main= in =project.clj=, and start with =lein run=.
+  - Set a ~:main~ in ~project.clj~, and start with
+
+  ~lein run~
+
+  - just create an uberjar and start with
+
+  ~java -jar foo-standalone.jar~
 
 * Immutant API's
 
   Functions whose side effects invoke JBoss services
 
-** immutant.web
+  - immutant.web
+  - immutant.messaging
+  - immutant.transactions
+  - immutant.scheduling
+  - immutant.caching
 
-   - app segmentation via virtual host and/or context path
-   - automatic session replication in a cluster
-   - auto-reloading in dev mode
-   - static resources served via [[http://ring-clojure.github.io/ring/ring.middleware.resource.html#var-wrap-resource][ring.middleware.resource/wrap-resource]]
-   - :ring config, e.g. :handler, :init, :destroy,
-     stacktraces?, :auto-reload?, :reload-paths
-   - simple websockets
+* immutant.web
 
-   examples: [[../src/demo/web.clj][demo/web.clj]] and [[../src/demo/websocket.clj][demo/websocket.clj]]
+  - app segmentation via virtual host and/or context path
+  - automatic session replication in a cluster
+  - websockets
+  - server-sent events
+  - auto-reloading in dev mode
 
-** immutant.scheduling
+  examples: [[../src/demo/web.clj][demo/web.clj]]
 
-   - schedules specified by maps created with helper functions
-   - singleton by default (runs on only one node in cluster)
-   - not durable
+* immutant.messaging
 
-   examples: [[../src/demo/scheduling.clj][demo/scheduling.clj]]
+  - allows publishing and listening to queues/topics using HornetQ
+  - supports point-to-point, request-response messaging
+  - transactional
 
-*** Parameters
+  examples: [[../src/demo/messaging.clj][demo/messaging.clj]] and [[../src/demo/remote_messaging_client.clj][demo/remote_messaging_client.clj]]
 
-    | :at     | java.util.Date, millis since epoch, or a military time string "HHmm" |
-    | :in     | start in millis from now, period alias or period spec                |
-    | :every  | delay interval in millis, period alias or period spec                |
-    | :repeat | # of repeats after initial firing; with :every                       |
-    | :until  | java.util.Date, millis since epoch, or "HHmm"; with :every           |
-    | :cron   | a Quartz cron spec, described below                                  |
+* immutant.transactions
 
-*** cron specs
+  - global transactions across db, queues and cache
 
-    dash for spans, comma for multiples, division for rates
+  examples: [[../src/demo/transactions.clj][demo/transactions.clj]]
 
-    | seconds |            0-59 |          |
-    | minutes |            0-59 |          |
-    | hours   |            0-23 |          |
-    | dom     |            1-31 | ?        |
-    | month   | 1-12 or JAN-DEC |          |
-    | dow     |  1-7 or SUN-SAT | ?        |
-    | year    |       1970-2099 | optional |
+* immutant.scheduling
 
+  - schedules specified cron-like or by maps
+  - singleton by default (runs on only one node in cluster)
+  - not durable
 
+  examples: [[../src/demo/scheduling.clj][demo/scheduling.clj]]
 
+* immutant.caching
 
-** immutant.messaging
+  - Infinispan transactional data grid
+  - flexible clustering: replicated, invalidated, distributed
+  - strong consistency by default, but trades C for A when P
+  - eviction, expiration, persistence, conditional writes
+  - can be shared with ruby apps in an app server
 
-   - allows publishing and listening to queues/topics using HornetQ
-   - supports point-to-point, request-response messaging
-
-   examples: [[../src/demo/messaging.clj][demo/messaging.clj]] and [[../src/demo/remote_messaging_client.clj][demo/remote_messaging_client.clj]]
-
-** immutant.caching
-
-   - Infinispan transactional data grid
-   - flexible clustering: replicated, invalidated, distributed
-   - strong consistency by default, but trades C for A when P
-   - eviction, expiration, persistence, conditional writes
-   - implements core.cache/CacheProtocol
-   - can be used with core.memoize/PluggableMemoization
-   - can be shared with ruby apps in an app server
-   - functional alternative: [[https://projectodd.ci.cloudbees.com/job/immutant2-incremental/lastSuccessfulBuild/artifact/target/apidocs/immutant.caching.html#var-swap-in.21][immutant.caching/swap-in!]]
-
-   examples: [[../src/demo/caching.clj][demo/caching.clj]]
+  examples: [[../src/demo/caching.clj][demo/caching.clj]]
