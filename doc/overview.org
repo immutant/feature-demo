@@ -1,19 +1,30 @@
 #+STARTUP: inlineimages
 
 * Immutant
+
 [[file:images/immutant_logo.jpg]]
 
 * What is Immutant?
 
   A curated collection of libraries that can be embedded within any
-  Clojure application. Optionally, the application can be deployed to
-  a stock [[http://wildfly.org][WildFly]] application server.
+  Clojure application.
+
+  Optionally, the application can be deployed to a stock [[http://wildfly.org][WildFly]]
+  application server.
 
   - web
   - messaging
   - cache
   - transactions
   - scheduling
+
+* Why WildFly?
+
+  - deployment story
+  - clustering
+  - management interface
+    - datasources
+    - monitoring
 
 * Using inside Wildfly
 
@@ -43,17 +54,18 @@
 
 * immutant.web
 
-  - app segmentation via virtual host and/or context path
   - automatic session replication in a cluster
   - websockets
   - server-sent events
   - auto-reloading in dev mode
+  - app segmentation via virtual host and/or context path
 
   examples: [[../src/demo/web.clj][demo/web.clj]]
 
 * immutant.messaging
 
-  - allows publishing and listening to queues/topics using HornetQ
+  - allows publishing and listening to queues/topics
+    - using HornetQ
   - supports point-to-point, request-response messaging
   - transactional
 
