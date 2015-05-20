@@ -17,6 +17,7 @@
                   "http://downloads.immutant.org/incremental/"]]
   :plugins [[lein-immutant "2.0.0"]]
   :main demo.core
+  :immutant {:war {:context-path "/"}}
   :uberjar-name "demo-standalone.jar"
   :profiles {:uberjar {:aot [demo.core]}}
   :min-lein-version "2.4.0"
