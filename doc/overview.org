@@ -6,7 +6,7 @@
   application. Optionally, the application can be deployed to a stock
   [[http://wildfly.org][WildFly]] application server.
 
-* The [[https://github.com/immutant/lein-immutant/tree/2x-dev][lein-immutant]] plugin
+* The [[https://github.com/immutant/lein-immutant/][lein-immutant]] plugin
 
   Only required if deploying your app to WildFly.
 
