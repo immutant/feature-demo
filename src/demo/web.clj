@@ -16,7 +16,8 @@
     (content-type "text/plain")))
 
 (defn counter
-  "From https://github.com/ring-clojure/ring/wiki/Sessions"
+  "An example manipulating session state from
+  https://github.com/ring-clojure/ring/wiki/Sessions"
   [{session :session}]
   (let [count (:count session 0)
         session (assoc session :count (inc count))]
@@ -25,6 +26,7 @@
       (assoc :session session))))
 
 (defn sse-countdown
+  "An example of Server Sent Events"
   [request]
   (sse/as-channel request
     {:on-open (fn [ch]
@@ -34,6 +36,8 @@
                 ;; Signal the client to call EventSource.close()
                 (sse/send! ch {:event "close", :data "bye!"}))}))
 
+
+;;; Compose routes from above functions
 (defroutes routes
   (GET "/" {c :context} (redirect (str c "/index.html")))
   (GET "/counter" [] counter)
@@ -41,19 +45,19 @@
   (route/resources "/")
   (ANY "*" [] echo))
 
-(def websocket-callbacks
-  "WebSocket callback functions"
+(def demo-app-callbacks
+  "Callbacks for websocket.html/app.js example"
   {:on-open    (fn [channel]
                  (async/send! channel "Ready to reverse your messages!"))
    :on-close   (fn [channel {:keys [code reason]}]
                  (println "close code:" code "reason:" reason))
-   :on-message (fn [ch m]
-                 (async/send! ch (apply str (reverse m))))})
+   :on-message (fn [channel m]
+                 (async/send! channel (apply str (reverse m))))})
 
 (defn -main [& {:as args}]
   (web/run
     (-> routes
       (immutant/wrap-session {:timeout 20})
-      (immutant/wrap-websocket websocket-callbacks))
+      (immutant/wrap-websocket demo-app-callbacks))
     (merge {"host" (env :demo-web-host), "port" (env :demo-web-port)}
       args)))
