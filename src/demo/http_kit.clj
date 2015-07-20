@@ -28,7 +28,7 @@
     {:on-message (fn [channel data]
                    (async/send! channel data))
      :on-open    (fn [channel]
-                   (if-not (:websocket? ring-request)
+                   (when-not (:websocket? ring-request)
                      (async/send! channel {:status 200
                                            :headers {"Content-Type" "text/plain"}
                                            :body    "Long polling?"}
