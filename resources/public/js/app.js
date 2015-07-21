@@ -24,7 +24,7 @@ window.onload = function() {
         }
 
         var uri = "ws://" + location.host + location.pathname;
-        uri = uri.substring(0, uri.lastIndexOf('/'));
+        uri = uri.substring(0, uri.lastIndexOf('/')) + "/reverser";
         socket = new WebSocket(uri);
 
         socket.onerror = function(error) {

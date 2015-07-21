@@ -1,9 +1,10 @@
 (ns demo.web
-  (:require [immutant.web             :as web]
-            [immutant.web.async       :as async]
-            [immutant.web.sse         :as sse]
-            [immutant.web.middleware  :as immutant]
-            [compojure.route          :as route]
+  (:require [immutant.web                 :as web]
+            [immutant.web.async           :as async]
+            [immutant.web.middleware      :as immutant]
+            [demo.web.sse                 :as sse]
+            [demo.web.http-kit-comparison :as hk]
+            [compojure.route              :as route]
             [compojure.core     :refer (ANY GET defroutes)]
             [ring.util.response :refer (response redirect content-type)]
             [clojure.pprint     :refer (pprint)]
@@ -25,39 +26,33 @@
     (-> (response (str "You accessed this page " count " times\n"))
       (assoc :session session))))
 
-(defn sse-countdown
-  "An example of Server Sent Events"
+(defn reverser
+  "An example WebSocket app"
   [request]
-  (sse/as-channel request
-    {:on-open (fn [ch]
-                (doseq [x (range 5 0 -1)]
-                  (sse/send! ch x)
-                  (Thread/sleep 500))
-                ;; Signal the client to call EventSource.close()
-                (sse/send! ch {:event "close", :data "bye!"}))}))
+  (async/as-channel request
+    {:on-open    (fn [channel]
+                   (async/send! channel "Ready to reverse your messages!"))
+     :on-message (fn [channel m]
+                   (async/send! channel (apply str (reverse m))))
+     :on-close   (fn [channel {:keys [code reason]}]
+                   (println "close code:" code "reason:" reason))}))
 
 
-;;; Compose routes from above functions
 (defroutes routes
   (GET "/" {c :context} (redirect (str c "/index.html")))
-  (GET "/counter" [] counter)
-  (GET "/sse" [] sse-countdown)
+  (GET "/counter"  [] counter)
+  (GET "/reverser" [] reverser)
+  (GET "/sse"      [] sse/countdown)
+  (GET "/http-kit" [] hk/async-handler)
   (route/resources "/")
   (ANY "*" [] echo))
-
-(def demo-app-callbacks
-  "Callbacks for websocket.html/app.js example"
-  {:on-open    (fn [channel]
-                 (async/send! channel "Ready to reverse your messages!"))
-   :on-close   (fn [channel {:keys [code reason]}]
-                 (println "close code:" code "reason:" reason))
-   :on-message (fn [channel m]
-                 (async/send! channel (apply str (reverse m))))})
 
 (defn -main [& {:as args}]
   (web/run
     (-> routes
-      (immutant/wrap-session {:timeout 20})
-      (immutant/wrap-websocket demo-app-callbacks))
+      (immutant/wrap-session
+        {:timeout 20})
+      #_(immutant/wrap-websocket
+        {:on-open (fn [ch] (println "You opened a websocket!"))}))
     (merge {"host" (env :demo-web-host), "port" (env :demo-web-port)}
       args)))

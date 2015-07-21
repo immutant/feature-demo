@@ -1,4 +1,4 @@
-(ns demo.http-kit
+(ns demo.web.http-kit-comparison
   "Show API differences between Immutant and HTTP Kit"
   (:require [immutant.web             :as web]
             [immutant.web.async       :as async]))
@@ -34,5 +34,3 @@
                                            :body    "Long polling?"}
                        :close? true)))}))
 
-(defn -main [& {:as args}]
-  (web/run async-handler :path "/http-kit"))
