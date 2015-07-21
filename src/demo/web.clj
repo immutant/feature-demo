@@ -1,7 +1,7 @@
 (ns demo.web
   (:require [immutant.web                 :as web]
             [immutant.web.async           :as async]
-            [immutant.web.middleware      :as immutant]
+            [immutant.web.middleware      :as mw]
             [demo.web.sse                 :as sse]
             [demo.web.http-kit-comparison :as hk]
             [compojure.route              :as route]
@@ -50,9 +50,9 @@
 (defn -main [& {:as args}]
   (web/run
     (-> routes
-      (immutant/wrap-session
+      (immutant.web.middleware/wrap-session
         {:timeout 20})
-      #_(immutant/wrap-websocket
+      #_(immutant.web.middleware/wrap-websocket
         {:on-open (fn [ch] (println "You opened a websocket!"))}))
     (merge {"host" (env :demo-web-host), "port" (env :demo-web-port)}
       args)))

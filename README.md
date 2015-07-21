@@ -50,7 +50,7 @@ unpacking an archive. For our purposes, we'll drop it in the project
 directory. For a list of available versions, see
 <http://wildfly.org/downloads/>
 
-    VERSION=8.2.0.Final
+    VERSION=9.0.0.Final
 
     # Install WildFly
     wget http://download.jboss.org/wildfly/$VERSION/wildfly-$VERSION.zip
