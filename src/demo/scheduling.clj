@@ -1,5 +1,5 @@
 (ns demo.scheduling
-  (:require [immutant.scheduling :as sch]
+  (:require [immutant.scheduling :refer (every at in until limit cron) :as sch]
             [immutant.util       :as util]
             immutant.scheduling.joda
             clj-time.core
@@ -9,32 +9,32 @@
 ;; scheduling specs are just maps. we provide optional helpers for
 ;; generating thoes maps
 (def every-5s
-  (or {:every (or 5000
-                [5 :seconds])}
-    (sch/every 5 :seconds)))
+  (or
+    {:every (or 5000 [5 :seconds])}
+    (every 5 :seconds)))
 
 ;; :at can be a Date, a time as a string, or millis since epoch
 (def daily
-  (-> (sch/at (or (Date.) "1830" 1395439646983))
-    (sch/every :day)))
+  (-> (at (or (Date.) "1830" 1395439646983))
+    (every :day)))
 
 ;; helpers optionally take a map as the first arg, so compose
 (def in-5m-until-5pm
-  (-> (sch/in 5 :minutes)
-    (sch/every 2 :hours, 30 :minutes)
-    (sch/until "1700")))
+  (-> (in 5 :minutes)
+    (every 2 :hours, 30 :minutes)
+    (until "1700")))
 
 ;; cron-style strings are also supported
 (def nine-am
-  (sch/cron "0 0 9 * * ?"))
+  (cron "0 0 9 * * ?"))
 
 (def every-5s-cron
-  (sch/cron "*/5 * * * * ?"))
+  (cron "*/5 * * * * ?"))
 
 (def every-10ms-in-500ms-4-times
-  (-> (sch/in 500)
-    (sch/every 10)
-    (sch/limit 4)))
+  (-> (in 500)
+    (every 10)
+    (limit 4)))
 
 ;; you can use clj-time periods if using clj-time
 (defn every-3s-lazy-seq []
@@ -48,7 +48,7 @@
   (def every-2-job
     (sch/schedule (bound-fn []
                     (println "called"))
-      (sch/every 2 :seconds)))
+      (every 2 :seconds)))
 
   ;; the return value of the schedule call can be used to stop it
   (sch/stop every-2-job)
@@ -73,16 +73,16 @@
         (println "unscheduling beep & boop")
         (sch/stop beep)
         (sch/stop boop))
-      (sch/in 20 :seconds)))
+      (in 20 :seconds)))
 
   ;; start singleton and non-singleton jobs to demo cluster failover
   (when (util/in-container?)
 
     ;; singleton jobs require an id
     (sch/schedule #(println "I run on ONE node")
-      (-> (sch/every 10 :seconds)
-        (sch/id :a_singleton)))
+      (-> {:id :a-unique-id-for-the-singleton}
+        (every 10 :seconds)))
 
     (sch/schedule #(println "I run on EVERY node")
-      (-> (sch/every 9 :seconds)
-        (sch/singleton false)))))
+      (-> {:singleton false}
+        (every 9 :seconds)))))
