@@ -20,6 +20,7 @@
 
   Differences:
   - Channel passed as callback param instead of macro param
+  - send! provides :on-success and :on-error callbacks
   - Channel not closed after send, by default
   - All ring body types supported
   - Automatic chunking of large (>16K) content"
