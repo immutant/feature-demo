@@ -4,6 +4,9 @@ An app showing trivial examples of all the Immutant libraries. Most
 log something to stdout, but the `demo.web` examples are available at
 <http://localhost:8080/>.
 
+You can view a running example here:
+<https://immutant-feature-demo.herokuapp.com/index.html>.
+
 You need at least Java 7 and Leiningen 2.4.0
 
 You can run the app in several ways:
