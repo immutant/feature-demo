@@ -18,8 +18,15 @@
   :plugins [[lein-immutant "2.0.0"]]
   :main demo.core
   :uberjar-name "demo-standalone.jar"
-  :profiles {:uberjar {:aot [demo.core]}}
   :min-lein-version "2.4.0"
   :jvm-opts ["-Dhornetq.data.dir=target/hornetq-data"
              "-Dcom.arjuna.ats.arjuna.objectstore.objectStoreDir=target/ObjectStore"]
-  :aliases {"msg-client" ["run" "-m" "demo.remote-messaging-client"]})
+  :aliases {"msg-client" ["run" "-m" "demo.remote-messaging-client"]}
+  :profiles {:uberjar {:aot [demo.core]}
+             :eap
+             {:exclusions [org.hornetq/hornetq-jms-server org.hornetq/hornetq-server
+                           org.jboss.narayana.jta/narayana-jta]
+              :dependencies [[org.hornetq/hornetq-jms-server "2.3.25.Final"]
+                             [org.hornetq/hornetq-server "2.3.25.Final"]
+                             [org.jboss.jbossts.jta/narayana-jta "4.17.29.Final"]]
+              :immutant {:war {:resource-paths ["eap-resources"]}}}})
