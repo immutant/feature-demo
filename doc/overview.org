@@ -37,7 +37,7 @@
 ** immutant.scheduling
 
    - schedules specified by maps created with helper functions
-   - singleton by default (runs on only one node in cluster)
+   - non-singleton by default (runs on every one node in cluster)
    - not durable
 
    examples: [[../src/demo/scheduling.clj][demo/scheduling.clj]]

@@ -1,5 +1,5 @@
 (ns demo.scheduling
-  (:require [immutant.scheduling :refer (every at in until limit cron) :as sch]
+  (:require [immutant.scheduling :refer (every at in until limit cron singleton) :as sch]
             [immutant.util       :as util]
             immutant.scheduling.joda
             clj-time.core
@@ -80,9 +80,8 @@
 
     ;; singleton jobs require an id
     (sch/schedule #(println "I run on ONE node")
-      (-> {:id :a-unique-id-for-the-singleton}
+      (-> (singleton :a-unique-id-for-the-singleton)
         (every 10 :seconds)))
 
     (sch/schedule #(println "I run on EVERY node")
-      (-> {:singleton false}
-        (every 9 :seconds)))))
+      (every 9 :seconds))))
