@@ -23,7 +23,7 @@ window.onload = function() {
             return;
         }
 
-        var uri = "ws://" + location.host + location.pathname;
+        var uri = location.protocol.replace(/^http/, "ws") + "//" + location.host + location.pathname;
         uri = uri.substring(0, uri.lastIndexOf('/')) + "/reverser";
         socket = new WebSocket(uri);
 
