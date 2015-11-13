@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [org.immutant/immutant "2.1.0"]
+                 [org.immutant/immutant "2.1.1"]
                  [compojure "1.3.4"]
                  [ring/ring-devel "1.3.1"]
                  [org.clojure/core.memoize "0.5.6"]
@@ -15,7 +15,7 @@
                  [com.h2database/h2 "1.3.176"]]
   :repositories [["Immutant incremental builds"
                   "http://downloads.immutant.org/incremental/"]]
-  :plugins [[lein-immutant "2.0.0"]]
+  :plugins [[lein-immutant "2.1.0"]]
   :main demo.core
   :uberjar-name "demo-standalone.jar"
   :min-lein-version "2.4.0"
