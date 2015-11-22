@@ -54,5 +54,11 @@
         {:timeout 20})
       #_(immutant.web.middleware/wrap-websocket
         {:on-open (fn [ch] (println "You opened a websocket!"))}))
-    (merge {"host" (env :demo-web-host), "port" (env :demo-web-port)}
+    (merge {"host" (env :demo-web-host), "port" (env :demo-web-port 8080)}
+      {"http2?" true
+       "ssl-port" 8443
+       :keystore "resources/server.keystore"
+       :key-password "password"
+       :truststore "resources/server.truststore"
+       :trust-password "password"}
       args)))
