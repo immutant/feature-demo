@@ -7,7 +7,19 @@ log something to stdout, but the `demo.web` examples are available at
 You can view a running example here:
 <https://immutant-feature-demo.herokuapp.com/index.html>.
 
-You need at least Java 7 and Leiningen 2.4.0
+You need at least Java 8 and Leiningen 2.4.0
+
+The web demo fires up two listeners: both HTTP and SSL, the latter
+with a self-signed certificate and HTTP/2 enabled. This requires a
+version of
+[ALPN](http://www.eclipse.org/jetty/documentation/current/alpn-chapter.html)
+appropriate for your JVM version to be available on the
+*bootclasspath*. The version of `alpn-boot` configured in project.clj
+is known to work with JVM version 1.8.0_66. You can disable either SSL
+or HTTP/2 by overriding the options ultimately passed to
+`immutant.web/run`, e.g.
+
+    lein run http2? false ssl-port nil
 
 You can run the app in several ways:
 
@@ -44,7 +56,14 @@ Once at a prompt, try `(demo.web/-main)`
 Create an uberjar and run it
 
     lein uberjar
-    java -jar target/demo-standalone.jar :http2? false
+    java -jar target/demo-standalone.jar http2? false
+
+Note that we disable HTTP/2 support to avoid a `NoClassDefFoundError`
+at startup. This will occur because HTTP/2 requires that a
+JVM-appropriate `alpn-boot.jar` is available from the *bootclasspath*.
+Alternatively, you can enable HTTP/2 like so:
+
+    java -Xbootclasspath/p:{/path/to/alpn-boot.jar} -jar target/demo-standalone.jar 
 
 ## In WildFly
 
