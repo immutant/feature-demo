@@ -13,10 +13,11 @@ By default, the web demo fires up two listeners: both HTTP (8080) and
 SSL (8443), the latter with a self-signed certificate and HTTP/2
 enabled. This requires a version of
 [ALPN](http://www.eclipse.org/jetty/documentation/current/alpn-chapter.html)
-appropriate for your JVM to be available on the *bootclasspath*. The
-version of `alpn-boot` configured in this project is known to work
-with JVM version `1.8.0_66`. You can disable either SSL or HTTP/2 by
-overriding the options ultimately passed to `immutant.web/run`, e.g.
+to be available on the *bootclasspath*. We rely on
+[a convenient Java agent](https://github.com/trustin/jetty-alpn-agent)
+to load one appropriate for your JVM. You can disable either SSL or
+HTTP/2 by overriding the options ultimately passed to
+`immutant.web/run`, e.g.
 
     lein run http2? false ssl-port nil
 
@@ -60,9 +61,12 @@ Create an uberjar and run it
 Note that we disable HTTP/2 support to avoid a `NoClassDefFoundError`
 at startup. This will occur because HTTP/2 requires that a
 JVM-appropriate `alpn-boot.jar` is available from the *bootclasspath*.
-Alternatively, you can enable HTTP/2 like so:
+We rely on
+[a convenient Java agent](https://github.com/trustin/jetty-alpn-agent)
+to make this happen. Once you find it in your local Maven repo, you
+may test HTTP/2 like so:
 
-    java -Xbootclasspath/p:{/path/to/alpn-boot.jar} -jar target/demo-standalone.jar 
+    java -javaagent:{/path/to/jetty-alpn-agent.jar} -jar target/demo-standalone.jar 
 
 ## In WildFly
 

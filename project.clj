@@ -15,9 +15,8 @@
                  [com.h2database/h2 "1.3.176"]]
   :repositories [["Immutant incremental builds"
                   "http://downloads.immutant.org/incremental/"]]
-  :plugins [[lein-immutant "2.1.0"]
-            [info.sunng/lein-bootclasspath-deps "0.2.0"]]
-  :boot-dependencies [[org.mortbay.jetty.alpn/alpn-boot "8.1.5.v20150921" :prepend true]]
+  :plugins [[lein-immutant "2.1.0"]]
+  :java-agents [[kr.motd.javaagent/jetty-alpn-agent "1.0.0.Final"]]
   :main demo.core
   :uberjar-name "demo-standalone.jar"
   :min-lein-version "2.4.0"
