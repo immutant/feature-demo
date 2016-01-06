@@ -9,17 +9,21 @@ You can view a running example here:
 
 You need at least Java 8 and Leiningen 2.4.0
 
-By default, the web demo fires up two listeners: both HTTP (8080) and
-SSL (8443), the latter with a self-signed certificate and HTTP/2
-enabled. This requires a version of
+### SSL and HTTP/2
+
+By default, the web demo fires up only one HTTP listener on port 8080.
+But if you set the `ssl-port` option, it'll also fire up an HTTPS
+listener with a self-signed certificate. You can even enable HTTP 2.0
+on that port by setting the `http2?` option. Doing so requires a
+version of
 [ALPN](http://www.eclipse.org/jetty/documentation/current/alpn-chapter.html)
 to be available on the *bootclasspath*. We rely on
 [a convenient Java agent](https://github.com/trustin/jetty-alpn-agent)
-to load one appropriate for your JVM. You can disable either SSL or
-HTTP/2 by overriding the options ultimately passed to
-`immutant.web/run`, e.g.
+to load one appropriate for your JVM. This agent is invoked, and the
+above options are set when the `:http2` profile defined in
+`project.clj` is enabled, like so:
 
-    lein run http2? false ssl-port nil
+    lein with-profile http2 run
 
 You can run the app in several ways:
 
@@ -43,6 +47,10 @@ You can use the -m option to run specific namespaces, e.g.
 
     lein run -m demo.web
 
+And you can run an HTTP/2.0 listener on port 9999 like this:
+
+    lein with-profile http2 run -m demo.web ssl-port 9999
+
 ## At a repl
 
 You can fire up a repl and invoke each namespace directly
@@ -51,22 +59,35 @@ You can fire up a repl and invoke each namespace directly
 
 Once at a prompt, try `(demo.web/-main)`
 
+Or, for an HTTP/2.0 listener, try this:
+
+    `(demo.web/-main "ssl-port" 9999 "http2?" true)`
+
+You'll note in the `demo.web/-main` function that the option keys are
+expected to be strings so that command line arguments can override
+them.
+
 ## From a jar
 
 Create an uberjar and run it
 
     lein uberjar
-    java -jar target/demo-standalone.jar http2? false
+    java -jar target/demo-standalone.jar
 
-Note that we disable HTTP/2 support to avoid a `NoClassDefFoundError`
-at startup. This will occur because HTTP/2 requires that a
-JVM-appropriate `alpn-boot.jar` is available from the *bootclasspath*.
-We rely on
-[a convenient Java agent](https://github.com/trustin/jetty-alpn-agent)
-to make this happen. Once you find it in your local Maven repo, you
-may test HTTP/2 like so:
+To create an HTTP/2.0 listener from the uberjar, we'll need to do some
+work. Because we're no longer running the app from Leiningen, our
+`:http2` profile does us no good, so we'll need to manually invoke the
+ALPN Java agent (described above). We'll also need to pass the
+necessary `ssl-port` and `http2?` command line options. Once you
+locate the agent jar in your local Maven repo, you may test HTTP/2
+like so:
 
-    java -javaagent:{/path/to/jetty-alpn-agent.jar} -jar target/demo-standalone.jar 
+    java -javaagent:{/path/to/jetty-alpn-agent.jar} -jar target/demo-standalone.jar ssl-port 8443 http2? true
+
+This assumes you've activated the `:http2` profile at some point. If
+you haven't, the agent jar won't be in your repo. To fetch it, try:
+
+    lein with-profile http2 check
 
 ## In WildFly
 

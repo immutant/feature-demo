@@ -51,12 +51,12 @@
   (web/run
     (-> routes
       (immutant.web.middleware/wrap-session
-        {:timeout 20})
-      #_(immutant.web.middleware/wrap-websocket
-        {:on-open (fn [ch] (println "You opened a websocket!"))}))
-    (merge {"host" (env :demo-web-host), "port" (env :demo-web-port 8080)}
-      {"http2?" true
-       "ssl-port" 8443
+        {:timeout 20}))
+    (merge
+      {"host" (env :demo-web-host)
+       "port" (env :demo-web-port 8080)
+       "ssl-port" (env :ssl-port)
+       "http2?" (env :http2?)
        :keystore "resources/server.keystore"
        :key-password "password"
        :truststore "resources/server.truststore"
