@@ -2,6 +2,7 @@
   (:require [immutant.web                 :as web]
             [immutant.web.async           :as async]
             [immutant.web.middleware      :as mw]
+            [immutant.util                :as util]
             [demo.web.sse                 :as sse]
             [demo.web.http-kit-comparison :as hk]
             [compojure.route              :as route]
@@ -57,8 +58,8 @@
        "port" (env :demo-web-port 8080)
        "ssl-port" (env :ssl-port)
        "http2?" (env :http2?)
-       :keystore "resources/server.keystore"
+       :keystore (util/app-relative "resources/server.keystore")
        :key-password "password"
-       :truststore "resources/server.truststore"
+       :truststore (util/app-relative "resources/server.truststore")
        :trust-password "password"}
       args)))
