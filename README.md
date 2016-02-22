@@ -96,7 +96,7 @@ unpacking an archive. For our purposes, we'll drop it in the project
 directory. For a list of available versions, see
 <http://wildfly.org/downloads/>
 
-    VERSION=9.0.2.Final
+    VERSION=10.0.0.Final
 
     # Install WildFly
     wget http://download.jboss.org/wildfly/$VERSION/wildfly-$VERSION.zip
