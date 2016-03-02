@@ -10,6 +10,9 @@
                 (doseq [x (range 5 0 -1)]
                   (sse/send! ch x)
                   (Thread/sleep 500))
-                ;; Signal the client to call EventSource.close()
-                (sse/send! ch {:event "close", :data "bye!"}))}))
+                ;; Signal the client to call EventSource.close(), and
+                ;; close our end after the send
+                (sse/send! ch
+                  {:event "close", :data "bye!"}
+                  :close? true))}))
 
