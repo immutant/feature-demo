@@ -30,7 +30,5 @@
                                   [org.hornetq/hornetq-server "2.3.25.Final"]
                                   [org.jboss.jbossts.jta/narayana-jta "4.17.29.Final"]]
                    :immutant {:war {:resource-paths ["eap-resources"]}}}
-             :http2 {:java-agents ~(if (re-matches #"1.7.*" (System/getProperty "java.version"))
-                                     '[[kr.motd.javaagent/jetty-alpn-agent "1.0.0.Final"]]
-                                     '[[org.mortbay.jetty.alpn/jetty-alpn-agent "2.0.3"]])
+             :http2 {:java-agents [[org.mortbay.jetty.alpn/jetty-alpn-agent "2.0.3"]]
                      :env {:ssl-port 8443, :http2? true}}})
